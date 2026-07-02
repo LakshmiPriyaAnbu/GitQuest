@@ -1,0 +1,100 @@
+import SwiftUI
+
+struct CommitMapView: View {
+    @Environment(GitStateController.self) private var gitState
+    @Environment(GameStateStore.self) private var game
+    @Environment(AppRouter.self) private var router
+    @State private var vm: CommitMapViewModel?
+
+    var body: some View {
+        Group {
+            // The else branch matters: an empty Group renders nothing, so
+            // .onAppear never fires and vm would never be created.
+            if let vm {
+                content(vm)
+            } else {
+                Color.clear
+            }
+        }
+        .background(GQColor.bg.ignoresSafeArea())
+        .navigationTitle("Commit Map")
+        .onAppear { if vm == nil { vm = CommitMapViewModel(gitState: gitState, game: game) } }
+    }
+
+    private func content(_ vm: CommitMapViewModel) -> some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Commit Map").font(GQFont.display(22)).foregroundStyle(GQColor.cream)
+                Text("your history as a quest map").font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
+
+                if !vm.hasCommits {
+                    emptyState(vm)
+                } else {
+                    legendRow(vm)
+
+                    ScrollView(.horizontal) {
+                        CommitMapCanvas(nodes: vm.nodes, edges: vm.edges, size: vm.mapSize, selectedId: vm.selectedId) { id in
+                            vm.select(id)
+                        }
+                        .padding(8)
+                    }
+                    .background(GQColor.panel2)
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(GQColor.ink, lineWidth: 2.5))
+
+                    if let commit = vm.selectedCommit {
+                        detailPanel(vm, commit)
+                    }
+                }
+            }
+            .padding(16)
+        }
+    }
+
+    private func emptyState(_ vm: CommitMapViewModel) -> some View {
+        VStack(spacing: 12) {
+            Text("No commits yet — head to the Playground to make your first one.")
+                .font(GQFont.body(14))
+                .foregroundStyle(GQColor.textOnCream)
+                .multilineTextAlignment(.center)
+            Button("Open the Playground") { router.navigate(route: "/playground") }
+                .buttonStyle(.gqPrimary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(20)
+        .background(GQColor.cream)
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(GQColor.ink, lineWidth: 2.5))
+    }
+
+    private func legendRow(_ vm: CommitMapViewModel) -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                ForEach(vm.legend) { entry in
+                    HStack(spacing: 5) {
+                        Circle().fill(entry.color).frame(width: 9, height: 9)
+                        Text(entry.name).font(GQFont.mono(11)).foregroundStyle(GQColor.cream)
+                    }
+                }
+            }
+        }
+    }
+
+    private func detailPanel(_ vm: CommitMapViewModel, _ commit: Commit) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(commit.msg).font(GQFont.display(15))
+            Text(commit.id).font(GQFont.mono(11)).foregroundStyle(GQColor.textOnCream.opacity(0.6))
+            Text("Author: \(commit.author) · Branch: \(commit.branch)").font(GQFont.body(12))
+            Text("Parents: \(commit.parents.isEmpty ? "none" : commit.parents.joined(separator: ", "))").font(GQFont.mono(11))
+            if !commit.files.isEmpty {
+                Text("Files: \(commit.files.joined(separator: ", "))").font(GQFont.body(12))
+            }
+            Text(vm.formatTime(commit)).font(GQFont.body(11)).foregroundStyle(GQColor.textOnCream.opacity(0.6))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(GQColor.cream)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(GQColor.ink, lineWidth: 2.5))
+    }
+}
