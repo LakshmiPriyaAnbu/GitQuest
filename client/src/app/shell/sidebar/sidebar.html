@@ -1,0 +1,52 @@
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <circle cx="6" cy="6" r="2.6" stroke="#100B2C" stroke-width="2.4" />
+        <circle cx="6" cy="18" r="2.6" stroke="#100B2C" stroke-width="2.4" />
+        <circle cx="18" cy="9" r="2.6" stroke="#100B2C" stroke-width="2.4" />
+        <path d="M6 8.6v6.8M8.4 6.4c4 0 5.4 1.4 5.4 4.2" stroke="#100B2C" stroke-width="2.4" stroke-linecap="round" />
+      </svg>
+    </div>
+    <div>
+      <div class="brand-name">GitQuest</div>
+      <div class="brand-tag">learn git the fun way</div>
+    </div>
+  </div>
+
+  @for (grp of groups; track grp.title) {
+    <div class="nav-group">
+      <div class="nav-group-title">{{ grp.title }}</div>
+      @for (it of grp.items; track it.route) {
+        <a
+          class="nav-item"
+          [routerLink]="it.route"
+          routerLinkActive="nav-item-active"
+        >
+          <gq-icon [name]="it.icon" [size]="19"></gq-icon>
+          <span class="nav-item-label">{{ it.label }}</span>
+          @if (it.route === '/quests' && game.questsDone() > 0) {
+            <span class="nav-badge">{{ game.questsDone() }}</span>
+          }
+        </a>
+      }
+    </div>
+  }
+
+  <div class="level-card">
+    <div class="level-row">
+      <span class="level-title">Lv {{ game.levelInfo().level }} · {{ game.levelInfo().title }}</span>
+      <span class="level-xp">{{ game.xp() }} XP</span>
+    </div>
+    <div class="level-bar">
+      <div class="level-bar-fill" [style.width.%]="game.levelInfo().pct"></div>
+    </div>
+    <div class="level-hint">
+      @if (!game.levelInfo().maxed) {
+        {{ game.levelInfo().toNext }} XP to Lv {{ game.levelInfo().nextLevel }}
+      } @else {
+        Max level reached!
+      }
+    </div>
+  </div>
+</aside>

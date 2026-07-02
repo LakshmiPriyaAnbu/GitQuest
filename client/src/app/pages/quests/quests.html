@@ -1,0 +1,23 @@
+<section class="gq-screen">
+  <div class="quest-list">
+    @for (q of rows(); track q.id) {
+      <div class="quest-card" [class.quest-done]="q.isDone" [class.quest-locked]="q.locked">
+        <div class="quest-top">
+          <span class="quest-diff" [style.background]="q.color">{{ q.difficulty }}</span>
+          @if (q.isDone) {
+            <span class="quest-status quest-status-done">✓ Completed</span>
+          } @else if (q.available) {
+            <span class="quest-status quest-status-available">Available</span>
+          } @else {
+            <span class="quest-status quest-status-locked">🔒 Locked</span>
+          }
+        </div>
+        <div class="quest-title">{{ q.title }}</div>
+        <div class="quest-meta">{{ q.minutes }} min · {{ q.xp }} XP · <span class="mono">{{ q.hint }}</span></div>
+        <button class="gq-btn gq-btn-primary gq-btn-sm quest-btn" [disabled]="q.locked" (click)="start(q.route)">
+          {{ q.isDone ? 'Replay' : 'Start →' }}
+        </button>
+      </div>
+    }
+  </div>
+</section>

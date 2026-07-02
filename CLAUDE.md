@@ -1,0 +1,45 @@
+# GitQuest
+
+An interactive Git internals and GitHub activity visualizer: learn version control by typing real git commands and watching a gamified simulation (workspace → staging → commits → branches), with an XP/quest/badge layer and a GitHub profile visualizer.
+
+## Stack
+
+- **Frontend**: Angular 22 (standalone components, signals, lazy-loaded routes) in `client/`
+- **Backend**: Express in `server/` — owns the simulated git repo's mechanics and state (session-scoped, in-memory only, no database) and proxies GitHub's public REST API
+- **Styling**: plain CSS with custom properties (design tokens in `client/src/styles.css`) — no CSS framework
+- **Persistence**: XP/levels/badges/quests/settings persist to browser `localStorage`; the simulated git repo lives in an Express `express-session` in-memory store and resets on server restart (by design — see the plan/CLAUDE notes on why a database wasn't used for the MVP)
+
+## Structure
+
+```
+client/src/app/
+  core/           services + shared data (GameStateService, GitApiService, GithubService, ViewportService, game-data.ts, nav-data.ts, models.ts)
+  shell/          app chrome: sidebar, header, mobile bottom nav
+  shared/         reusable components: icon, mascot (Blip), toast-container, info-card
+  pages/          one folder per route: dashboard, playground, command-lab, commit-map,
+                  branches, internals, learn, github, xp, quests, settings
+
+server/src/
+  gitEngine.js    pure git-simulator logic (no Express dependency) — command parser,
+                  guided branch/merge simulator, conflict scenario
+  routes/git.js   /api/git/* — wraps gitEngine.js with express-session
+  routes/github.js /api/github/:username — server-side GitHub REST proxy
+  index.js        Express app: session middleware, routes, static serving of client/dist
+```
+
+## Commands
+
+```bash
+npm run install:all   # install client + server deps
+npm run dev            # ng serve (:4200) + nodemon server (:3000), concurrently, hot reload
+npm run build           # build the Angular client for production
+npm start                # run the built app as a single process (node server/src/index.js)
+```
+
+See `.claude/skills/run.md` for the full run/verify walkthrough, including the Node version note (Angular 22 needs Node ≥22.22.3 or ≥24.15.0 — `scripts/with-node22.sh` handles this automatically for the root scripts).
+
+## Design notes worth knowing
+
+- Git mechanics (init/add/commit/branch/checkout/merge/log/status/diff/reset, plus the guided branch/merge simulator and the hardcoded merge-conflict scenario) live entirely in `server/src/gitEngine.js`, deliberately separated from Express routing so it's testable as a plain function library.
+- `/api/git/command` and the `-sim`/`conflict` endpoints return `{ state, events }` — `events` is a list of quest/badge/xp things that happened, which the frontend's `GameStateService` turns into toasts and persisted progress. This keeps "what the git engine did" and "how the player is rewarded" cleanly separated.
+- The commit graph's pixel layout (lanes, x/y coordinates, SVG bezier edges) is computed client-side in `CommitMap` from the state the backend returns — the backend has no concept of layout.

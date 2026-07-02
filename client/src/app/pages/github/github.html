@@ -1,0 +1,114 @@
+<section class="gq-screen">
+  <div class="gh-search gq-panel">
+    <input
+      class="gh-input"
+      placeholder="GitHub username…"
+      [ngModel]="username()"
+      (ngModelChange)="username.set($event)"
+      (keydown.enter)="submit()"
+    />
+    <button class="gq-btn gq-btn-primary" (click)="submit()">
+      <gq-icon name="github" [size]="16"></gq-icon>
+      Scan profile
+    </button>
+    <button class="gq-btn" (click)="demo()">Try demo (dev-priya)</button>
+  </div>
+
+  @switch (github.status()) {
+    @case ('loading') {
+      <div class="gh-status">Scanning contribution realm…</div>
+    }
+    @case ('error') {
+      <div class="gh-status gh-error">
+        {{ github.errorMessage() }}
+        <button class="gq-btn gq-btn-sm" (click)="demo()">Load demo profile instead</button>
+      </div>
+    }
+    @case ('loaded') {
+      @if (github.data(); as data) {
+        @if (derived(); as d) {
+          <div class="gh-grid">
+            <div class="gh-profile gq-panel">
+              @if (data.demo) {
+                <div class="demo-flag">demo data</div>
+              }
+              <div class="gh-avatar">{{ data.user.login.charAt(0).toUpperCase() }}</div>
+              <div class="gh-name">{{ data.user.name || data.user.login }}</div>
+              <div class="gh-login">&#64;{{ data.user.login }}</div>
+              @if (data.user.bio) {
+                <div class="gh-bio">{{ data.user.bio }}</div>
+              }
+              <div class="gh-counts">
+                <div><strong>{{ data.user.public_repos }}</strong> repos</div>
+                <div><strong>{{ data.user.followers }}</strong> followers</div>
+                <div><strong>{{ data.user.following }}</strong> following</div>
+              </div>
+
+              <div class="gh-lang-title">Languages</div>
+              @for (l of d.languages; track l.name) {
+                <div class="lang-row">
+                  <span class="lang-name">{{ l.name }}</span>
+                  <div class="lang-bar-track"><div class="lang-bar-fill" [style.width.%]="l.pct"></div></div>
+                  <span class="lang-pct">{{ l.pct }}%</span>
+                </div>
+              }
+            </div>
+
+            <div class="gh-main">
+              <div class="gh-stats">
+                @for (s of gameStats(); track s.label) {
+                  <div class="gh-stat-tile">
+                    <div class="gh-stat-value">{{ s.value }}</div>
+                    <div class="gh-stat-label">{{ s.sub }}</div>
+                    <div class="gh-stat-sub">{{ s.label }}</div>
+                  </div>
+                }
+              </div>
+
+              <div class="gq-panel heatmap-panel">
+                <div class="heatmap-head">
+                  <span>Contribution calendar</span>
+                  <span class="streak-tag">🔥 longest streak: {{ d.longestStreak }} days</span>
+                </div>
+                <div class="heatmap-grid">
+                  @for (week of d.weeks; track $index) {
+                    <div class="heatmap-col">
+                      @for (cell of week; track cell.date) {
+                        <div class="heatmap-cell" [style.background]="cell.color" [title]="cell.date + ': ' + cell.count + ' contributions'"></div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <div class="gh-two-col">
+                <div class="gq-panel">
+                  <div class="gh-sub-title">Top worlds (repos)</div>
+                  @for (r of d.topRepos; track r.name) {
+                    <div class="repo-row">
+                      <span class="repo-name">{{ r.name }}</span>
+                      <span class="repo-stars">★ {{ r.stars }}</span>
+                    </div>
+                  }
+                </div>
+                <div class="gq-panel">
+                  <div class="gh-sub-title">Recent quests</div>
+                  @for (a of d.recent; track $index) {
+                    <div class="activity-row">
+                      <span class="activity-icon">{{ a.icon }}</span>
+                      <span class="activity-text">{{ a.text }}</span>
+                      <span class="activity-when">{{ a.when }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      }
+    }
+    @default {
+      <div class="gh-status">Enter a GitHub username above, or try the demo profile.</div>
+    }
+  }
+</section>

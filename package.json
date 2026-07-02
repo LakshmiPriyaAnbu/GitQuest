@@ -1,0 +1,26 @@
+{
+  "name": "gitquest",
+  "version": "1.0.0",
+  "description": "GitQuest - interactive Git internals and GitHub activity visualizer",
+  "main": "index.js",
+  "scripts": {
+    "dev": "scripts/with-node22.sh concurrently -n server,client -c blue,green \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "build": "scripts/with-node22.sh npm run build --prefix client",
+    "start": "node server/src/index.js",
+    "install:all": "scripts/with-node22.sh npm install --prefix client && npm install --prefix server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LakshmiPriyaAnbu/GitQuest.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LakshmiPriyaAnbu/GitQuest/issues"
+  },
+  "homepage": "https://github.com/LakshmiPriyaAnbu/GitQuest#readme",
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}

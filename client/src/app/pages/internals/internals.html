@@ -1,0 +1,9 @@
+<section class="gq-screen">
+  <div class="card-grid">
+    @for (c of cards; track c.title) {
+      <gq-info-card [emoji]="c.emoji" [title]="c.title" [subtitle]="c.meta" [accent]="c.accent">
+        {{ c.body }}
+      </gq-info-card>
+    }
+  </div>
+</section>

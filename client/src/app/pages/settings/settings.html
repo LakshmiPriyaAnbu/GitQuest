@@ -1,0 +1,62 @@
+<section class="gq-screen settings">
+  <div class="gq-panel">
+    <div class="settings-title">Theme</div>
+    <div class="theme-row">
+      <button class="theme-swatch theme-nebula" [class.theme-active]="game.settings().theme === 'nebula'" (click)="setTheme('nebula')">
+        Nebula
+      </button>
+      <button class="theme-swatch theme-candy" [class.theme-active]="game.settings().theme === 'candy'" (click)="setTheme('candy')">
+        Candy
+      </button>
+    </div>
+  </div>
+
+  <div class="gq-panel">
+    <div class="settings-title">Animation speed</div>
+    <div class="settings-row">
+      <input
+        type="range"
+        min="0.5"
+        max="2"
+        step="0.1"
+        [value]="game.settings().animSpeed"
+        (input)="setAnimSpeed($any($event.target).value)"
+      />
+      <span class="mono">{{ game.settings().animSpeed.toFixed(1) }}×</span>
+    </div>
+  </div>
+
+  <div class="gq-panel">
+    <div class="settings-row settings-row-between">
+      <div>
+        <div class="settings-title">Remember GitHub username</div>
+        <div class="settings-sub">Skip re-typing your username next time you open the visualizer.</div>
+      </div>
+      <input
+        type="checkbox"
+        [checked]="game.settings().cacheUser"
+        (change)="toggleCacheUser($any($event.target).checked)"
+      />
+    </div>
+  </div>
+
+  <div class="gq-panel">
+    <div class="settings-title">Playground</div>
+    <button class="gq-btn" (click)="resetPlayground()">↺ Reset playground state</button>
+  </div>
+
+  <div class="gq-panel">
+    <div class="settings-title">Export</div>
+    <button class="gq-btn gq-btn-primary" (click)="exportSummary()">⬇ Export activity summary</button>
+  </div>
+
+  <div class="gq-panel">
+    <div class="settings-title">About</div>
+    <div class="about-grid">
+      <div class="about-tile"><div class="about-value">{{ game.xp() }}</div><div class="about-label">Total XP</div></div>
+      <div class="about-tile"><div class="about-value">{{ game.levelInfo().title }}</div><div class="about-label">Rank</div></div>
+      <div class="about-tile"><div class="about-value">{{ game.questsDone() }}/8</div><div class="about-label">Quests done</div></div>
+      <div class="about-tile"><div class="about-value">{{ badgeCount() }}/8</div><div class="about-label">Badges</div></div>
+    </div>
+  </div>
+</section>

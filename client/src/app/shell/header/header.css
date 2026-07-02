@@ -1,0 +1,102 @@
+.app-header {
+  flex: 0 0 auto;
+  height: 66px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 22px;
+  border-bottom: 3px solid var(--gq-ink);
+  background: rgba(27, 20, 64, 0.6);
+}
+
+.mobile-title-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1;
+}
+
+.brand-mark-sm {
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: linear-gradient(140deg, var(--gq-purple), var(--gq-cyan));
+  border: 2.5px solid var(--gq-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-4deg);
+  flex-shrink: 0;
+}
+
+.mobile-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 19px;
+  color: var(--gq-cream);
+}
+
+.desktop-title {
+  flex: 1;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 23px;
+  letter-spacing: -0.01em;
+  color: var(--gq-cream);
+}
+
+.subtitle {
+  font-family: var(--font-hand);
+  font-size: 14px;
+  color: var(--gq-muted-4);
+  margin-top: -2px;
+}
+
+.header-pills {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 2.5px solid var(--gq-ink);
+  padding: 6px 12px;
+  border-radius: 20px;
+  box-shadow: var(--gq-shadow-sm);
+}
+
+.pill-head {
+  background: #173a2e;
+}
+
+.pill-head .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gq-mint);
+  box-shadow: 0 0 8px var(--gq-mint);
+}
+
+.pill-head .pill-text {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: #7bf0bb;
+}
+
+.pill-xp {
+  background: var(--gq-gold);
+}
+
+.pill-text-dark {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: #5b3d06;
+}

@@ -1,0 +1,100 @@
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 640px;
+}
+
+.gq-panel {
+  background: var(--gq-cream);
+}
+
+.settings-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--gq-text-on-cream);
+}
+
+.settings-sub {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12.5px;
+  color: var(--gq-muted-1);
+  margin-top: 3px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.settings-row-between {
+  justify-content: space-between;
+  margin-top: 0;
+}
+
+.theme-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.theme-swatch {
+  flex: 1;
+  height: 60px;
+  border-radius: 14px;
+  border: 2.5px solid var(--gq-ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--gq-cream);
+  cursor: pointer;
+}
+
+.theme-nebula {
+  background: radial-gradient(circle at 30% 30%, rgba(155, 124, 255, 0.9), rgba(55, 214, 230, 0.7));
+}
+
+.theme-candy {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 138, 76, 0.9), rgba(255, 107, 157, 0.7));
+}
+
+.theme-active {
+  outline: 3px solid var(--gq-mint);
+  outline-offset: 2px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--gq-text-on-cream);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.about-tile {
+  background: var(--gq-panel-1);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+
+.about-value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--gq-cream);
+}
+
+.about-label {
+  font-family: var(--font-hand);
+  font-size: 11.5px;
+  color: var(--gq-muted-3);
+}

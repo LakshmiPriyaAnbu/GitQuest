@@ -1,0 +1,95 @@
+<section class="gq-screen">
+  <div class="br-grid">
+    <div class="br-left">
+      <div class="gq-panel">
+        <div class="sim-title">Guided simulator</div>
+        <div class="sim-sub">Tap the steps in order to fork a path and bring it home.</div>
+        <div class="sim-actions">
+          <button class="gq-btn gq-btn-purple" (click)="newBranch()">🌿 Create + switch branch</button>
+          <button class="gq-btn gq-btn-primary" (click)="commitHere()">💎 Commit here</button>
+          <button class="gq-btn gq-btn-cyan" (click)="mergeMain()">🔀 Merge into main</button>
+          <button class="gq-btn gq-btn-pink" (click)="startConflict()">⚔️ Conflict battle</button>
+        </div>
+      </div>
+
+      <div class="gq-panel-dark gq-panel">
+        <div class="branch-list-head">
+          <span class="branch-list-title">Branches</span>
+          <span class="branch-list-head-tag">HEAD → <span class="mint">{{ git.state()?.head?.ref ?? 'none' }}</span></span>
+        </div>
+        @if (hasRepo()) {
+          <div class="branch-list">
+            @for (b of branches(); track b.name) {
+              <div class="branch-row">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <circle cx="6" cy="6" r="2.4" [attr.stroke]="b.isHead ? '#43E197' : '#B7A6FF'" stroke-width="2.4" />
+                  <circle cx="6" cy="18" r="2.4" [attr.stroke]="b.isHead ? '#43E197' : '#B7A6FF'" stroke-width="2.4" />
+                  <circle cx="18" cy="9" r="2.4" [attr.stroke]="b.isHead ? '#43E197' : '#B7A6FF'" stroke-width="2.4" />
+                  <path d="M6 8.4v7.2M8 6c4 0 5.5 1.2 5.5 4" [attr.stroke]="b.isHead ? '#43E197' : '#B7A6FF'" stroke-width="2.4" />
+                </svg>
+                <span class="branch-name">{{ b.name }}</span>
+                <span class="branch-tip">{{ b.tip }}</span>
+                @if (b.isHead) {
+                  <span class="head-tag">HEAD</span>
+                }
+                @if (!b.isHead) {
+                  <button class="switch-btn" (click)="switchTo(b.name)">switch</button>
+                }
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-hint">Run "git init" in the Playground to get started.</div>
+        }
+      </div>
+    </div>
+
+    <div class="br-right">
+      <div class="explainer explainer-green">
+        <div class="explainer-title">⏩ Fast-forward merge</div>
+        <div class="explainer-body">When main hasn't moved since you branched, Git just slides the pointer forward. History stays a single straight line — no merge commit.</div>
+      </div>
+      <div class="explainer explainer-purple">
+        <div class="explainer-title">🔀 Three-way merge</div>
+        <div class="explainer-body">When both branches gained commits, Git weaves them with a merge commit that has two parents — tying the two paths back together.</div>
+      </div>
+      <div class="explainer explainer-pink">
+        <div class="explainer-title">⚔️ Merge conflict</div>
+        <div class="explainer-body">When both branches edit the same lines, Git can't decide. It's a boss battle — you choose which version wins, then commit the resolution.</div>
+      </div>
+    </div>
+  </div>
+
+  @if (conflict(); as cf) {
+    <div class="conflict-backdrop" (click)="cancelConflict()">
+      <div class="conflict-modal" (click)="$event.stopPropagation()">
+        <div class="conflict-head">
+          <span class="conflict-emoji">⚔️</span>
+          <span class="conflict-title">Merge Conflict!</span>
+        </div>
+        <div class="conflict-sub">
+          Both branches changed <span class="mono-pill">{{ cf.file }}</span> — pick how to resolve it.
+        </div>
+        <div class="conflict-panes">
+          <div class="conflict-pane conflict-current">
+            <div class="pane-label">CURRENT (main)</div>
+            @for (l of cf.ours; track l) {
+              <div class="pane-line">{{ l }}</div>
+            }
+          </div>
+          <div class="conflict-pane conflict-incoming">
+            <div class="pane-label">INCOMING (feature-ui)</div>
+            @for (l of cf.theirs; track l) {
+              <div class="pane-line">{{ l }}</div>
+            }
+          </div>
+        </div>
+        <div class="conflict-actions">
+          <button class="gq-btn gq-btn-primary" (click)="resolve('current')">Keep current</button>
+          <button class="gq-btn gq-btn-pink" (click)="resolve('incoming')">Keep incoming</button>
+          <button class="gq-btn gq-btn-purple" (click)="resolve('both')">Combine both</button>
+        </div>
+      </div>
+    </div>
+  }
+</section>
