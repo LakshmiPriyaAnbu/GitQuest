@@ -1,5 +1,7 @@
 # GitQuest
 
+**Live demo: [gitquest-y41k.onrender.com](https://gitquest-y41k.onrender.com)** *(free tier — the first request after idle may take ~30–50 s to wake the server)*
+
 GitQuest is an interactive Git internals and GitHub activity visualizer that teaches version control concepts through command simulation, commit graphs, branch maps, quests, XP, and developer activity insights.
 
 Type real git commands in the Playground and watch files move from your workspace to the staging area to commits; explore your history as a branching quest map; fork and merge branches (including a guided merge-conflict scenario); work through a Command Lab of git lessons with quizzes; and turn any public GitHub profile into a gamified activity dashboard.
