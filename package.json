@@ -7,7 +7,11 @@
     "dev": "scripts/with-node22.sh concurrently -n server,client -c blue,green \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
     "build": "scripts/with-node22.sh npm run build --prefix client",
     "start": "node server/src/index.js",
-    "install:all": "scripts/with-node22.sh npm install --prefix client && npm install --prefix server"
+    "install:all": "scripts/with-node22.sh npm install --prefix client && npm install --prefix server",
+    "render-build": "npm install --prefix client && npm run build --prefix client && npm install --prefix server"
+  },
+  "engines": {
+    "node": ">=22.22.3"
   },
   "repository": {
     "type": "git",

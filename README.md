@@ -16,3 +16,7 @@ npm run dev
 ```
 
 Then open http://localhost:4200. See [`.claude/skills/run.md`](.claude/skills/run.md) for the production-style single-process run, the Node version requirement, and a quick smoke check.
+
+## Deploying
+
+`render.yaml` at the repo root is a ready-to-use [Render](https://render.com) Blueprint — in the Render dashboard, choose New → Blueprint and select this repo. See the "Deployment" section in [CLAUDE.md](CLAUDE.md) for what it configures and the free-tier tradeoffs.

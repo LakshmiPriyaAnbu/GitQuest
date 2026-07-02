@@ -51,3 +51,7 @@ Then in a browser: Dashboard → "Start Git Quest" → type `git init` in the Pl
 - Starting the server with a bare `command &` inside a single Bash call gets killed when that shell exits — background it properly (the harness's `run_in_background` option, or `nohup`/a process manager) if you need it to outlive the current command.
 - If port 3000 is already bound from a previous run: `lsof -ti:3000 | xargs kill -9`.
 - The simulated git repo lives in an in-memory `express-session` store — it resets on server restart. XP/badges/quests/settings persist separately in the browser's `localStorage` and survive server restarts.
+
+## Deploying
+
+`render.yaml` at the repo root is a Render Blueprint — connect the repo in Render's dashboard (New → Blueprint) and it builds/runs the app exactly like the production-style check above (`npm run render-build` then `npm start`), pinned to the Node version in `.node-version`. It's configured on Render's free tier, which spins the service down after ~15 min idle — the next request cold-starts it and wipes the in-memory git-session state (XP/badges/quests are unaffected, since those live in the browser). Upgrade the plan in `render.yaml` (or the Render dashboard) if that reset behavior becomes a problem.

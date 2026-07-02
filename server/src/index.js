@@ -11,6 +11,9 @@ const clientDist = path.join(__dirname, '../../client/dist/client/browser');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.set('trust proxy', 1);
+app.get('/healthz', (req, res) => res.status(200).send('ok'));
+
 app.use(express.json());
 app.use(
   session({
@@ -18,7 +21,7 @@ app.use(
     secret: process.env.SESSION_SECRET || 'gitquest-dev-secret',
     resave: false,
     saveUninitialized: true,
-    cookie: { httpOnly: true, sameSite: 'lax' },
+    cookie: { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production' },
   })
 );
 

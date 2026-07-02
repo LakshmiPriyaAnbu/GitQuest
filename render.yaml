@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: gitquest
+    env: node
+    plan: free
+    buildCommand: npm install && npm run render-build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
