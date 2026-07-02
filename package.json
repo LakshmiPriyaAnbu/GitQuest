@@ -8,7 +8,7 @@
     "build": "scripts/with-node22.sh npm run build --prefix client",
     "start": "node server/src/index.js",
     "install:all": "scripts/with-node22.sh sh -c 'cd client && npm install && cd ../server && npm install'",
-    "render-build": "cd client && npm ci && npm run build && cd ../server && npm ci --omit=dev"
+    "render-build": "cd client && npm ci --include=dev && npm run build && cd ../server && npm ci --omit=dev"
   },
   "engines": {
     "node": ">=22.22.3"
