@@ -92,13 +92,22 @@ final class CommitMapViewModel {
     var selectedId: String?
     private let gitState: GitStateController
     private let game: GameStateStore
+    private let router: AppRouter
 
-    init(gitState: GitStateController, game: GameStateStore) {
+    init(gitState: GitStateController, game: GameStateStore, router: AppRouter) {
         self.gitState = gitState
         self.game = game
-        game.completeQuest(id: "q8", title: "Read a commit graph", xp: 20)
+        self.router = router
+        if let quest = QUESTS.first(where: { $0.id == "q8" }) {
+            game.completeQuest(id: quest.id, title: quest.title, xp: quest.xp)
+        }
     }
 
+    var route: AppRouteDescriptor {
+        APP_ROUTES.first(where: { $0.id == "commitmap" }) ?? APP_ROUTES[0]
+    }
+
+    let copy = GQGeneratedContent.shared.commitMap
     var state: GitState? { gitState.state }
     var hasCommits: Bool { (state?.order.count ?? 0) > 0 }
 
@@ -116,6 +125,10 @@ final class CommitMapViewModel {
 
     func select(_ id: String) {
         selectedId = id
+    }
+
+    func openPlayground() {
+        router.navigate(route: APP_ROUTES.first(where: { $0.id == "playground" })?.path ?? "/playground")
     }
 
     func formatTime(_ commit: Commit) -> String {

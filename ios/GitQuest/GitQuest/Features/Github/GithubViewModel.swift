@@ -4,6 +4,13 @@ enum GithubStatus {
     case empty, loading, error, loaded
 }
 
+struct GithubStatItem: Identifiable {
+    let id: String
+    let label: String
+    let sub: String
+    let value: Int
+}
+
 /// Shared app-wide GitHub state (like the web's GithubService) so the XP screen can read the
 /// same loaded profile the GitHub screen fetched, without re-fetching.
 @Observable
@@ -26,8 +33,29 @@ final class GithubViewModel {
         }
     }
 
+    var route: AppRouteDescriptor {
+        APP_ROUTES.first(where: { $0.id == "github" }) ?? APP_ROUTES[0]
+    }
+
+    let copy = GQGeneratedContent.shared.github
+
     var derived: DerivedGithub? {
         data.map(deriveGithubStats)
+    }
+
+    var gameStats: [GithubStatItem] {
+        guard let derived, let user = data?.user else { return [] }
+        let values: [String: Int] = [
+            "contributions": derived.totalContributions,
+            "streak": derived.currentStreak,
+            "repositories": user.public_repos,
+            "languages": derived.languages.count,
+            "pullRequests": data?.events.filter { $0.type == "PullRequestEvent" }.count ?? 0,
+            "stars": derived.totalStars,
+        ]
+        return copy.stats.map {
+            GithubStatItem(id: $0.id, label: $0.label, sub: $0.sub, value: values[$0.id] ?? 0)
+        }
     }
 
     func submit() async {

@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { MOBILE_NAV } from '../../core/nav-data';
 import { Icon } from '../../shared/icon/icon';
+import { ShellStateService } from '../shell-state.service';
 
 @Component({
   selector: 'gq-mobile-nav',
@@ -10,5 +10,5 @@ import { Icon } from '../../shared/icon/icon';
   styleUrl: './mobile-nav.css',
 })
 export class MobileNav {
-  protected readonly items = MOBILE_NAV;
+  protected readonly shell = inject(ShellStateService);
 }

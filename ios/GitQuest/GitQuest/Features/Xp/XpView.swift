@@ -13,15 +13,15 @@ struct XpView: View {
             if let vm { content(vm) } else { Color.clear }
         }
         .background(GQColor.bg.ignoresSafeArea())
-        .navigationTitle("XP Dashboard")
+        .navigationTitle(vm?.route.label ?? GQGeneratedContent.shared.shell.appTitle)
         .onAppear { if vm == nil { vm = XpViewModel(game: game, gitState: gitState, github: github) } }
     }
 
     private func content(_ vm: XpViewModel) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                Text("XP Dashboard").font(GQFont.display(22)).foregroundStyle(GQColor.cream)
-                Text("your developer power level").font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
+                Text(vm.route.title).font(GQFont.display(22)).foregroundStyle(GQColor.cream)
+                Text(vm.route.subtitle).font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
 
                 rankCard(vm)
                 weeklyChart(vm)
@@ -32,14 +32,15 @@ struct XpView: View {
     }
 
     private func rankCard(_ vm: XpViewModel) -> some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 10) {
             Text(vm.levelInfo.title).font(GQFont.display(24))
-            Text("Level \(vm.levelInfo.level) · \(vm.xp) XP").font(GQFont.body(13))
+            Text(vm.progressLabel).font(GQFont.body(13))
             ProgressView(value: Double(vm.levelInfo.pct), total: 100)
                 .tint(GQColor.mint)
-            HStack {
-                statChip(value: "\(vm.questsDone)/\(QUESTS.count)", label: "Quests")
-                statChip(value: "\(vm.unlockedBadgeCount)/\(BADGES.count)", label: "Badges")
+            HStack(spacing: 8) {
+                ForEach(vm.stats) { stat in
+                    statChip(stat)
+                }
             }
         }
         .padding(16)
@@ -49,17 +50,21 @@ struct XpView: View {
         .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(GQColor.ink, lineWidth: 2.5))
     }
 
-    private func statChip(value: String, label: String) -> some View {
+    private func statChip(_ stat: XpStatItem) -> some View {
+        let palette = GQThemeRuntime.statPalettes[stat.palette]
         VStack {
-            Text(value).font(GQFont.display(14))
-            Text(label).font(GQFont.body(10)).foregroundStyle(GQColor.textOnCream.opacity(0.6))
+            Text(stat.value).font(GQFont.display(14)).foregroundStyle(palette?.value ?? GQColor.textOnCream)
+            Text(stat.label).font(GQFont.body(10)).foregroundStyle(palette?.label ?? GQColor.textOnCream.opacity(0.6))
         }
         .frame(maxWidth: .infinity)
+        .padding(.vertical, 10)
+        .background(palette?.bg ?? GQColor.cream.opacity(0.85))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 
     private func weeklyChart(_ vm: XpViewModel) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(vm.hasGithubData ? "Weekly activity" : "Weekly activity (estimated)")
+            Text(vm.hasGithubData ? vm.copy.weeklyActivityTitle : "\(vm.copy.weeklyActivityTitle) (estimated)")
                 .font(GQFont.body(12, weight: .bold)).foregroundStyle(GQColor.cream)
             HStack(alignment: .bottom, spacing: 8) {
                 ForEach(vm.weeklyBars) { bar in
@@ -73,13 +78,16 @@ struct XpView: View {
                 }
             }
             .frame(height: 100, alignment: .bottom)
+            if !vm.hasGithubData {
+                Text(vm.copy.chartNote).font(GQFont.body(10)).foregroundStyle(GQColor.muted3)
+            }
         }
     }
 
     private func badgeGrid(_ vm: XpViewModel) -> some View {
         let columns = [GridItem(.adaptive(minimum: 90), spacing: 8)]
         return VStack(alignment: .leading, spacing: 8) {
-            Text("Badges").font(GQFont.body(12, weight: .bold)).foregroundStyle(GQColor.cream)
+            Text(vm.copy.badgesTitle).font(GQFont.body(12, weight: .bold)).foregroundStyle(GQColor.cream)
             LazyVGrid(columns: columns, spacing: 8) {
                 ForEach(vm.badges) { row in
                     BadgeChipView(badge: row.def, unlocked: row.unlocked)

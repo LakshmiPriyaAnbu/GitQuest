@@ -1,21 +1,10 @@
 import Foundation
 
-struct PlaygroundSuggestion: Identifiable {
+struct PlaygroundSuggestionChip: Identifiable {
     let cmd: String
     let hint: String
     var id: String { cmd }
 }
-
-let PLAYGROUND_SUGGESTIONS: [PlaygroundSuggestion] = [
-    PlaygroundSuggestion(cmd: "git init", hint: "Start tracking this folder"),
-    PlaygroundSuggestion(cmd: "git status", hint: "See what has changed"),
-    PlaygroundSuggestion(cmd: "git add .", hint: "Stage everything"),
-    PlaygroundSuggestion(cmd: "git commit -m \"my first commit\"", hint: "Save a snapshot"),
-    PlaygroundSuggestion(cmd: "git branch feature-ui", hint: "Fork a new path"),
-    PlaygroundSuggestion(cmd: "git checkout -b feature-ui", hint: "Create and switch in one step"),
-    PlaygroundSuggestion(cmd: "git merge feature-ui", hint: "Bring a branch back together"),
-    PlaygroundSuggestion(cmd: "git log", hint: "See your commit history"),
-]
 
 struct RecentCommit: Identifiable {
     let sha: String
@@ -30,6 +19,13 @@ struct BranchPill: Identifiable {
     var id: String { name }
 }
 
+struct PlaygroundColumn: Identifiable {
+    let id: String
+    let title: String
+    let subtitle: String
+    let color: String
+}
+
 @Observable
 final class PlaygroundViewModel {
     var command: String = ""
@@ -39,11 +35,24 @@ final class PlaygroundViewModel {
         self.gitState = gitState
     }
 
+    var route: AppRouteDescriptor {
+        APP_ROUTES.first(where: { $0.id == "playground" }) ?? APP_ROUTES[0]
+    }
+
+    let copy = GQGeneratedContent.shared.playground
     var state: GitState? { gitState.state }
 
-    var workingCountLabel: String { "\(state?.workingDir.count ?? 0) files" }
-    var stagingCountLabel: String { "\(state?.staging.count ?? 0) files" }
-    var commitCountLabel: String { "\(state?.order.count ?? 0) commits" }
+    var workingCountLabel: String { "\(state?.workingDir.count ?? 0) \(copy.countLabels.filesSuffix)" }
+    var stagingCountLabel: String { "\(state?.staging.count ?? 0) \(copy.countLabels.filesSuffix)" }
+    var commitCountLabel: String { "\(state?.order.count ?? 0) \(copy.countLabels.commitsSuffix)" }
+
+    var columns: [PlaygroundColumn] {
+        [
+            PlaygroundColumn(id: "working", title: copy.workingDirectoryTitle, subtitle: workingCountLabel, color: "orange"),
+            PlaygroundColumn(id: "staging", title: copy.stagingAreaTitle, subtitle: stagingCountLabel, color: "gold"),
+            PlaygroundColumn(id: "repo", title: copy.repositoryTitle, subtitle: commitCountLabel, color: "mint"),
+        ]
+    }
 
     var recentCommits: [RecentCommit] {
         guard let s = state else { return [] }
@@ -56,6 +65,10 @@ final class PlaygroundViewModel {
     var branchPills: [BranchPill] {
         guard let s = state else { return [] }
         return s.branches.keys.sorted().map { BranchPill(name: $0, isHead: $0 == s.head.ref) }
+    }
+
+    var suggestions: [PlaygroundSuggestionChip] {
+        copy.suggestions.map { PlaygroundSuggestionChip(cmd: $0.cmd, hint: $0.hint) }
     }
 
     func runInput() async {

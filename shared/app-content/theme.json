@@ -1,0 +1,88 @@
+{
+  "themes": {
+    "nebula": {
+      "cssVars": {
+        "gq-ink": "#100B2C",
+        "gq-bg": "#221A48",
+        "gq-sidebar": "#1B1440",
+        "gq-panel-1": "#2E2560",
+        "gq-panel-2": "#1E1748",
+        "gq-panel-3": "#140F30",
+        "gq-cream": "#FFF4E4",
+        "gq-text-on-cream": "#2A2154",
+        "gq-purple": "#9B7CFF",
+        "gq-cyan": "#37D6E6",
+        "gq-mint": "#43E197",
+        "gq-gold": "#FFC24B",
+        "gq-pink": "#FF6B9D",
+        "gq-orange": "#FF8A4C",
+        "gq-muted-1": "#6B5FA6",
+        "gq-muted-2": "#8A7BC0",
+        "gq-muted-3": "#B7A6FF",
+        "gq-muted-4": "#A99AE0",
+        "gq-shell-glow-1": "rgba(155, 124, 255, 0.28)",
+        "gq-shell-glow-2": "rgba(55, 214, 230, 0.18)",
+        "gq-shell-glow-3": "rgba(255, 138, 76, 0.10)",
+        "gq-dot-texture": "rgba(255, 255, 255, 0.14)"
+      }
+    },
+    "candy": {
+      "cssVars": {
+        "gq-ink": "#100B2C",
+        "gq-bg": "#2A1B40",
+        "gq-sidebar": "#24153F",
+        "gq-panel-1": "#3B255F",
+        "gq-panel-2": "#2A1948",
+        "gq-panel-3": "#1B1032",
+        "gq-cream": "#FFF4E4",
+        "gq-text-on-cream": "#2A2154",
+        "gq-purple": "#9B7CFF",
+        "gq-cyan": "#37D6E6",
+        "gq-mint": "#43E197",
+        "gq-gold": "#FFC24B",
+        "gq-pink": "#FF6B9D",
+        "gq-orange": "#FF8A4C",
+        "gq-muted-1": "#7B5D95",
+        "gq-muted-2": "#A178C6",
+        "gq-muted-3": "#D1B6FF",
+        "gq-muted-4": "#C7A8E4",
+        "gq-shell-glow-1": "rgba(255, 138, 76, 0.32)",
+        "gq-shell-glow-2": "rgba(255, 107, 157, 0.22)",
+        "gq-shell-glow-3": "rgba(155, 124, 255, 0.12)",
+        "gq-dot-texture": "rgba(255, 255, 255, 0.12)"
+      }
+    }
+  },
+  "palettes": {
+    "mint": { "bg": "#DFF7EA", "value": "#0B3A26", "label": "#3D8A63" },
+    "cyan": { "bg": "#EAF6FF", "value": "#112233", "label": "#5A89A0" },
+    "gold": { "bg": "#FFF3D6", "value": "#5B3D06", "label": "#A3862F" },
+    "lavender": { "bg": "#EDE7FF", "value": "#4B2CA0", "label": "#6B57A8" }
+  },
+  "difficultyColors": {
+    "Easy": "#43E197",
+    "Medium": "#FFC24B",
+    "Hard": "#FF6B9D"
+  },
+  "laneColors": ["#43E197", "#9B7CFF", "#FFC24B", "#FF6B9D", "#37D6E6", "#FF8A4C"],
+  "commitGradients": [
+    "linear-gradient(140deg,#43E197,#2fbf7d)",
+    "linear-gradient(140deg,#9B7CFF,#7452e0)",
+    "linear-gradient(140deg,#37D6E6,#20a9b8)"
+  ],
+  "toastStyles": {
+    "xp": { "bg": "#FFC24B", "icon": "xp", "fg": "#5B3D06" },
+    "badge": { "bg": "#FF6B9D", "icon": "trophy", "fg": "#FFF4E4" },
+    "info": { "bg": "#37D6E6", "icon": "flag", "fg": "#0B3A40" }
+  },
+  "accents": {
+    "purple": "#9B7CFF",
+    "cyan": "#37D6E6",
+    "mint": "#43E197",
+    "gold": "#FFC24B",
+    "pink": "#FF6B9D",
+    "orange": "#FF8A4C",
+    "cream": "#FFF4E4",
+    "ink": "#100B2C"
+  }
+}

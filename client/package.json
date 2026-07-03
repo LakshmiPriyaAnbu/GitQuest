@@ -2,10 +2,15 @@
   "name": "client",
   "version": "0.0.0",
   "scripts": {
+    "pregenerate": "../scripts/with-node22.sh node ../scripts/generate-app-content.mjs",
     "ng": "ng",
+    "prestart": "../scripts/with-node22.sh node ../scripts/generate-app-content.mjs",
     "start": "ng serve",
-    "build": "ng build",
+    "prebuild": "../scripts/with-node22.sh node ../scripts/generate-app-content.mjs",
+    "build": "CI=1 ng build",
+    "prewatch": "../scripts/with-node22.sh node ../scripts/generate-app-content.mjs",
     "watch": "ng build --watch --configuration development",
+    "pretest": "../scripts/with-node22.sh node ../scripts/generate-app-content.mjs",
     "test": "ng test",
     "dev": "ng serve --proxy-config proxy.conf.json"
   },

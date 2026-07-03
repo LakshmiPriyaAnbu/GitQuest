@@ -2,7 +2,6 @@
 :root {
   --gq-ink: #100b2c;
   --gq-bg: #221a48;
-  --gq-bg-candy: #2a1b40;
   --gq-sidebar: #1b1440;
   --gq-panel-1: #2e2560;
   --gq-panel-2: #1e1748;
@@ -19,6 +18,10 @@
   --gq-muted-2: #8a7bc0;
   --gq-muted-3: #b7a6ff;
   --gq-muted-4: #a99ae0;
+  --gq-shell-glow-1: rgba(155, 124, 255, 0.28);
+  --gq-shell-glow-2: rgba(55, 214, 230, 0.18);
+  --gq-shell-glow-3: rgba(255, 138, 76, 0.1);
+  --gq-dot-texture: rgba(255, 255, 255, 0.14);
 
   --gq-shadow-sm: 2px 2px 0 var(--gq-ink);
   --gq-shadow-md: 4px 4px 0 var(--gq-ink);

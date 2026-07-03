@@ -1,8 +1,10 @@
 import SwiftUI
 
 struct LearnView: View {
+    private let vm = LearnViewModel()
+
     var body: some View {
-        ConceptCardGrid(title: "Learn", subtitle: "plain-English git concepts", cards: LEARN_CARDS)
-            .navigationTitle("Learn")
+        ConceptCardGrid(title: vm.route.title, subtitle: vm.route.subtitle, cards: vm.cards)
+            .navigationTitle(vm.route.label)
     }
 }

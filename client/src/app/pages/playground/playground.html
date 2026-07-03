@@ -5,11 +5,11 @@
         <span class="dot dot-red"></span>
         <span class="dot dot-yellow"></span>
         <span class="dot dot-green"></span>
-        <span class="terminal-label">gitquest ~ terminal</span>
-        <button class="reset-btn" (click)="reset()">↺ Reset</button>
+        <span class="terminal-label">{{ vm.copy.terminalLabel }}</span>
+        <button class="reset-btn" (click)="vm.reset()">{{ vm.copy.resetButton }}</button>
       </div>
       <div class="terminal-body" #termBody>
-        @for (ln of state()?.output; track $index) {
+        @for (ln of vm.state()?.output; track $index) {
           <div class="term-line" [class]="'line-' + ln.k">{{ ln.t }}</div>
         }
         <div class="term-prompt">$ <span class="gq-cursor"></span></div>
@@ -18,20 +18,20 @@
         <span class="prompt-dollar">$</span>
         <input
           class="terminal-input"
-          placeholder="type a git command…"
-          [ngModel]="command()"
-          (ngModelChange)="command.set($event)"
-          (keydown)="onKeydown($event)"
+          [placeholder]="vm.copy.inputPlaceholder"
+          [ngModel]="vm.command()"
+          (ngModelChange)="vm.command.set($event)"
+          (keydown)="vm.onKeydown($event)"
         />
-        <button class="gq-btn gq-btn-primary gq-btn-sm" (click)="runInput()">Run ▶</button>
+        <button class="gq-btn gq-btn-primary gq-btn-sm" (click)="vm.runInput()">{{ vm.copy.runButton }}</button>
       </div>
     </div>
 
     <div>
-      <div class="hint-label">✎ try tapping a command…</div>
+      <div class="hint-label">{{ vm.copy.suggestionHeading }}</div>
       <div class="suggestion-row">
-        @for (sg of suggestions; track sg.cmd) {
-          <button class="gq-chip" [title]="sg.hint" (click)="runFromHistory(sg.cmd)">{{ sg.cmd }}</button>
+        @for (sg of vm.suggestions; track sg.cmd) {
+          <button class="gq-chip" [title]="sg.hint" (click)="vm.runFromHistory(sg.cmd)">{{ sg.cmd }}</button>
         }
       </div>
     </div>
@@ -39,20 +39,20 @@
     <div class="explain-card">
       <div class="explain-header">
         <div class="explain-icon">
-          <gq-icon name="quest" [size]="16" stroke="#9B7CFF"></gq-icon>
+          <gq-icon name="quest" [size]="16" stroke="var(--gq-purple)"></gq-icon>
         </div>
-        <span class="explain-heading">What just happened?</span>
+        <span class="explain-heading">{{ vm.copy.explainHeading }}</span>
       </div>
-      <div class="explain-title">{{ state()?.explain?.title ?? 'Ready to start' }}</div>
-      <div class="explain-body">{{ state()?.explain?.body ?? 'Run "git init" to create your first repository.' }}</div>
+      <div class="explain-title">{{ vm.state()?.explain?.title ?? vm.copy.defaultExplainTitle }}</div>
+      <div class="explain-body">{{ vm.state()?.explain?.body ?? vm.copy.defaultExplainBody }}</div>
     </div>
 
-    @if (state()?.history?.length) {
+    @if (vm.state()?.history?.length) {
       <div>
-        <div class="hint-label">↺ command history</div>
+        <div class="hint-label">{{ vm.copy.historyHeading }}</div>
         <div class="history-list">
-          @for (h of state()!.history.slice(-6).reverse(); track $index) {
-            <button class="history-item" (click)="runFromHistory(h)"><span class="history-dollar">$</span> {{ h }}</button>
+          @for (h of vm.state()!.history.slice(-6).reverse(); track $index) {
+            <button class="history-item" (click)="vm.runFromHistory(h)"><span class="history-dollar">$</span> {{ h }}</button>
           }
         </div>
       </div>
@@ -61,8 +61,8 @@
 
   <div class="pg-right">
     <div class="pg-right-header">
-      <div class="pg-right-title">The Git world</div>
-      <div class="pg-right-head">HEAD → <span class="mint">{{ state()?.head?.ref ?? 'none' }}</span></div>
+      <div class="pg-right-title">{{ vm.copy.worldTitle }}</div>
+      <div class="pg-right-head">{{ vm.copy.headLabel }} <span class="mint">{{ vm.state()?.head?.ref ?? vm.copy.headNone }}</span></div>
     </div>
 
     <div class="world-panel working-panel">
@@ -71,27 +71,27 @@
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" stroke="#0B3A40" stroke-width="2" /></svg>
         </div>
         <div>
-          <div class="world-title">Working Directory</div>
-          <div class="world-sub">your workspace camp ⛺</div>
+          <div class="world-title">{{ vm.copy.workingDirectoryTitle }}</div>
+          <div class="world-sub">{{ vm.copy.workingDirectorySubtitle }}</div>
         </div>
-        <span class="world-count">{{ workingCount() }}</span>
+        <span class="world-count">{{ vm.workingCount() }}</span>
       </div>
       <div class="chip-row">
-        @for (w of state()?.workingDir; track w.name) {
+        @for (w of vm.state()?.workingDir; track w.name) {
           <div class="file-chip">
             <span class="file-dot" style="background:#FF6B9D"></span>
             <span class="file-name">{{ w.name }}</span>
           </div>
         }
-        @if (state() && state()!.workingDir.length === 0) {
-          <div class="empty-note">✓ clean — nothing to commit</div>
+        @if (vm.state() && vm.state()!.workingDir.length === 0) {
+          <div class="empty-note">{{ vm.copy.workingDirectoryEmpty }}</div>
         }
       </div>
     </div>
 
     <div class="flow-arrow">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14m0 0l-5-5m5 5l5-5" stroke="#B7A6FF" stroke-width="2.2" stroke-linecap="round" /></svg>
-      git add
+      {{ vm.copy.flowAddLabel }}
     </div>
 
     <div class="world-panel staging-panel">
@@ -100,27 +100,27 @@
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M6 8V6a3 3 0 013-3h6a3 3 0 013 3v2m-13 0h13a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8a2 2 0 012-2z" stroke="#5B3D06" stroke-width="2" /></svg>
         </div>
         <div>
-          <div class="world-title staging-text">Staging Area</div>
-          <div class="world-sub staging-sub">the backpack 🎒 before committing</div>
+          <div class="world-title staging-text">{{ vm.copy.stagingAreaTitle }}</div>
+          <div class="world-sub staging-sub">{{ vm.copy.stagingAreaSubtitle }}</div>
         </div>
-        <span class="world-count staging-sub">{{ stagingCount() }}</span>
+        <span class="world-count staging-sub">{{ vm.stagingCount() }}</span>
       </div>
       <div class="chip-row">
-        @for (s of state()?.staging; track s.name) {
+        @for (s of vm.state()?.staging; track s.name) {
           <div class="file-chip staging-chip">
             <gq-icon name="check" [size]="13" stroke="#5B3D06"></gq-icon>
             <span class="file-name staging-text">{{ s.name }}</span>
           </div>
         }
-        @if (state() && state()!.staging.length === 0) {
-          <div class="empty-note staging-sub">backpack's empty — run git add</div>
+        @if (vm.state() && vm.state()!.staging.length === 0) {
+          <div class="empty-note staging-sub">{{ vm.copy.stagingAreaEmpty }}</div>
         }
       </div>
     </div>
 
     <div class="flow-arrow">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14m0 0l-5-5m5 5l5-5" stroke="#B7A6FF" stroke-width="2.2" stroke-linecap="round" /></svg>
-      git commit
+      {{ vm.copy.flowCommitLabel }}
     </div>
 
     <div class="world-panel repo-panel">
@@ -129,15 +129,15 @@
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 5v10l-8 5-8-5V7z" stroke="#0B3A26" stroke-width="2" /></svg>
         </div>
         <div>
-          <div class="world-title repo-text">Local Repository</div>
-          <div class="world-sub repo-sub">glowing commit crystals 💎</div>
+          <div class="world-title repo-text">{{ vm.copy.repositoryTitle }}</div>
+          <div class="world-sub repo-sub">{{ vm.copy.repositorySubtitle }}</div>
         </div>
-        <span class="world-count repo-sub">{{ commitCount() }}</span>
+        <span class="world-count repo-sub">{{ vm.commitCount() }}</span>
       </div>
 
-      @if (repoCommitsView().length) {
+      @if (vm.repoCommitsView().length) {
         <div class="commit-row">
-          @for (c of repoCommitsView(); track c.sha) {
+          @for (c of vm.repoCommitsView(); track c.sha) {
             <div class="commit-item">
               <div class="commit-dot" [style.background]="c.grad" [class.commit-head]="c.isHead">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 5v10l-8 5-8-5V7z" stroke="#100B2C" stroke-width="1.8" fill="rgba(255,255,255,0.35)" /></svg>
@@ -147,16 +147,16 @@
           }
         </div>
       } @else {
-        <div class="empty-note repo-empty">no commits yet — history is empty</div>
+        <div class="empty-note repo-empty">{{ vm.copy.repositoryEmpty }}</div>
       }
 
       <div class="branch-row">
-        @for (b of branchPills(); track b.name) {
+        @for (b of vm.branchPills(); track b.name) {
           <div class="branch-pill">
             <gq-icon name="branch" [size]="13" [stroke]="b.isHead ? '#43E197' : '#B7A6FF'"></gq-icon>
             <span class="branch-name" [class.branch-head-name]="b.isHead">{{ b.name }}</span>
             @if (b.isHead) {
-              <span class="head-tag">HEAD</span>
+              <span class="head-tag">{{ vm.copy.headBadge }}</span>
             }
           </div>
         }

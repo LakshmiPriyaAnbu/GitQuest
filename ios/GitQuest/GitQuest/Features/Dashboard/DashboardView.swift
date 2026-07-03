@@ -4,53 +4,67 @@ struct DashboardView: View {
     @Environment(GameStateStore.self) private var game
     @Environment(GitStateController.self) private var gitState
     @Environment(AppRouter.self) private var router
+    @State private var vm: DashboardViewModel?
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                hero
-                statsRow
-                VStack(spacing: 12) {
-                    ForEach(FEATURES) { feature in
-                        Button {
-                            router.navigate(route: feature.route)
-                        } label: {
-                            featureCard(feature)
+        Group {
+            if let vm {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        hero(vm)
+                        statsRow(vm)
+                        VStack(spacing: 12) {
+                            ForEach(vm.features) { feature in
+                                Button {
+                                    vm.open(feature.route)
+                                } label: {
+                                    featureCard(feature)
+                                }
+                                .buttonStyle(.plain)
+                            }
                         }
-                        .buttonStyle(.plain)
                     }
+                    .padding(16)
                 }
             }
-            .padding(16)
+            else {
+                Color.clear
+            }
         }
         .background(GQColor.bg.ignoresSafeArea())
-        .navigationTitle("Home")
+        .navigationTitle(vm?.route.label ?? GQGeneratedContent.shared.shell.appTitle)
+        .onAppear {
+            if vm == nil {
+                vm = DashboardViewModel(game: game, gitState: gitState, router: router)
+            }
+        }
     }
 
-    private var hero: some View {
+    private func hero(_ vm: DashboardViewModel) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Welcome, adventurer").font(GQFont.display(26)).foregroundStyle(GQColor.cream)
-            Text("your git journey starts here").font(GQFont.hand(15)).foregroundStyle(GQColor.muted3)
+            Text(vm.route.title).font(GQFont.display(26)).foregroundStyle(GQColor.cream)
+            Text(vm.route.subtitle).font(GQFont.hand(15)).foregroundStyle(GQColor.muted3)
         }
     }
 
-    private var statsRow: some View {
+    private func statsRow(_ vm: DashboardViewModel) -> some View {
         HStack(spacing: 10) {
-            statTile(value: "\(game.xp)", label: "XP")
-            statTile(value: game.levelInfo.title, label: "Level \(game.levelInfo.level)")
-            statTile(value: "\(gitState.state?.order.count ?? 0)", label: "Commits")
-            statTile(value: "\(game.questsDone)/\(QUESTS.count)", label: "Quests")
+            ForEach(vm.stats) { item in
+                statTile(item)
+            }
         }
     }
 
-    private func statTile(value: String, label: String) -> some View {
+    private func statTile(_ item: DashboardStatItem) -> some View {
+        let palette = GQThemeRuntime.statPalettes[item.palette]
         VStack(spacing: 2) {
-            Text(value).font(GQFont.display(18))
-            Text(label).font(GQFont.body(11)).foregroundStyle(GQColor.textOnCream.opacity(0.7))
+            Text(item.value).font(GQFont.display(18)).foregroundStyle(palette?.value ?? GQColor.textOnCream)
+            Text(item.label).font(GQFont.body(11)).foregroundStyle(palette?.label ?? GQColor.textOnCream.opacity(0.7))
+            Text(item.hint).font(GQFont.body(9)).foregroundStyle(palette?.label.opacity(0.8) ?? GQColor.textOnCream.opacity(0.55))
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
-        .background(GQColor.cream)
+        .background(palette?.bg ?? GQColor.cream)
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(GQColor.ink, lineWidth: 2))
     }

@@ -17,15 +17,15 @@ struct CommitMapView: View {
             }
         }
         .background(GQColor.bg.ignoresSafeArea())
-        .navigationTitle("Commit Map")
-        .onAppear { if vm == nil { vm = CommitMapViewModel(gitState: gitState, game: game) } }
+        .navigationTitle(vm?.route.label ?? GQGeneratedContent.shared.shell.appTitle)
+        .onAppear { if vm == nil { vm = CommitMapViewModel(gitState: gitState, game: game, router: router) } }
     }
 
     private func content(_ vm: CommitMapViewModel) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Commit Map").font(GQFont.display(22)).foregroundStyle(GQColor.cream)
-                Text("your history as a quest map").font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
+                Text(vm.route.title).font(GQFont.display(22)).foregroundStyle(GQColor.cream)
+                Text(vm.route.subtitle).font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
 
                 if !vm.hasCommits {
                     emptyState(vm)
@@ -53,11 +53,14 @@ struct CommitMapView: View {
 
     private func emptyState(_ vm: CommitMapViewModel) -> some View {
         VStack(spacing: 12) {
-            Text("No commits yet — head to the Playground to make your first one.")
+            Text(vm.copy.emptyTitle)
+                .font(GQFont.display(16))
+                .foregroundStyle(GQColor.textOnCream)
+            Text(vm.copy.emptyBody)
                 .font(GQFont.body(14))
                 .foregroundStyle(GQColor.textOnCream)
                 .multilineTextAlignment(.center)
-            Button("Open the Playground") { router.navigate(route: "/playground") }
+            Button(vm.copy.openPlaygroundButton) { vm.openPlayground() }
                 .buttonStyle(.gqPrimary)
         }
         .frame(maxWidth: .infinity)
@@ -84,12 +87,12 @@ struct CommitMapView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text(commit.msg).font(GQFont.display(15))
             Text(commit.id).font(GQFont.mono(11)).foregroundStyle(GQColor.textOnCream.opacity(0.6))
-            Text("Author: \(commit.author) · Branch: \(commit.branch)").font(GQFont.body(12))
-            Text("Parents: \(commit.parents.isEmpty ? "none" : commit.parents.joined(separator: ", "))").font(GQFont.mono(11))
+            Text("\(vm.copy.detailLabels.author): \(commit.author) · \(vm.copy.detailBranchPrefix)\(commit.branch)").font(GQFont.body(12))
+            Text("\(vm.copy.detailLabels.parents): \(commit.parents.isEmpty ? vm.copy.detailLabels.rootCommit : commit.parents.joined(separator: ", "))").font(GQFont.mono(11))
             if !commit.files.isEmpty {
-                Text("Files: \(commit.files.joined(separator: ", "))").font(GQFont.body(12))
+                Text("\(vm.copy.detailLabels.changedFiles): \(commit.files.joined(separator: ", "))").font(GQFont.body(12))
             }
-            Text(vm.formatTime(commit)).font(GQFont.body(11)).foregroundStyle(GQColor.textOnCream.opacity(0.6))
+            Text("\(vm.copy.detailLabels.time): \(vm.formatTime(commit))").font(GQFont.body(11)).foregroundStyle(GQColor.textOnCream.opacity(0.6))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)

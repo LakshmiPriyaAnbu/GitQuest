@@ -21,21 +21,35 @@ final class AppRouter {
     var tab: AppTab = .dashboard
     var morePath: [SecondaryDestination] = []
 
+    private static let tabRoutes: [String: AppTab] = Dictionary(uniqueKeysWithValues: [
+        ("dashboard", AppTab.dashboard),
+        ("playground", .playground),
+        ("commitmap", .commitMap),
+        ("github", .github),
+    ].compactMap { routeId, tab in
+        APP_ROUTES.first(where: { $0.id == routeId }).map { ($0.path, tab) }
+    })
+
+    private static let moreRoutes: [String: SecondaryDestination] = Dictionary(uniqueKeysWithValues: [
+        ("quests", SecondaryDestination.quests),
+        ("commandlab", .commandLab),
+        ("branches", .branches),
+        ("internals", .internals),
+        ("learn", .learn),
+        ("xp", .xp),
+        ("settings", .settings),
+    ].compactMap { routeId, destination in
+        APP_ROUTES.first(where: { $0.id == routeId }).map { ($0.path, destination) }
+    })
+
     func navigate(route: String) {
-        switch route {
-        case "/dashboard": tab = .dashboard
-        case "/playground": tab = .playground
-        case "/commitmap": tab = .commitMap
-        case "/github": tab = .github
-        case "/quests": open(.quests)
-        case "/commandlab": open(.commandLab)
-        case "/branches": open(.branches)
-        case "/internals": open(.internals)
-        case "/learn": open(.learn)
-        case "/xp": open(.xp)
-        case "/settings": open(.settings)
-        default: break
+        if let tab = Self.tabRoutes[route] {
+            self.tab = tab
+            return
         }
+
+        guard let destination = Self.moreRoutes[route] else { return }
+        open(destination)
     }
 
     private func open(_ destination: SecondaryDestination) {

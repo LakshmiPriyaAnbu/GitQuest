@@ -12,25 +12,25 @@ struct QuestsView: View {
             if let vm { content(vm) } else { Color.clear }
         }
         .background(GQColor.bg.ignoresSafeArea())
-        .navigationTitle("Quests")
-        .onAppear { if vm == nil { vm = QuestsViewModel(game: game) } }
+        .navigationTitle(vm?.route.label ?? GQGeneratedContent.shared.shell.appTitle)
+        .onAppear { if vm == nil { vm = QuestsViewModel(game: game, router: router) } }
     }
 
     private func content(_ vm: QuestsViewModel) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Quests").font(GQFont.display(22)).foregroundStyle(GQColor.cream)
-                Text("the guided learning path").font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
+                Text(vm.route.title).font(GQFont.display(22)).foregroundStyle(GQColor.cream)
+                Text(vm.route.subtitle).font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
 
                 ForEach(vm.rows) { row in
-                    questRow(row)
+                    questRow(vm, row)
                 }
             }
             .padding(16)
         }
     }
 
-    private func questRow(_ row: QuestRow) -> some View {
+    private func questRow(_ vm: QuestsViewModel, _ row: QuestRow) -> some View {
         HStack(alignment: .top, spacing: 12) {
             Circle()
                 .fill(row.def.difficulty.color)
@@ -42,14 +42,15 @@ struct QuestsView: View {
                 Text("\(row.def.difficulty.rawValue) · \(row.def.minutes) min · \(row.def.xp) XP")
                     .font(GQFont.body(11)).foregroundStyle(GQColor.textOnCream.opacity(0.6))
                 Text(row.def.hint).font(GQFont.mono(11)).foregroundStyle(GQColor.textOnCream.opacity(0.5))
+                Text(vm.statusLabel(for: row)).font(GQFont.body(10, weight: .bold)).foregroundStyle(GQColor.textOnCream.opacity(0.55))
             }
 
             Spacer(minLength: 0)
 
             if row.isDone {
-                Button("Replay") { router.navigate(route: row.def.route) }.buttonStyle(.gqDefault)
+                Button(vm.copy.replayButton) { vm.open(row) }.buttonStyle(.gqDefault)
             } else if row.available {
-                Button("Start →") { router.navigate(route: row.def.route) }.buttonStyle(.gqPrimary)
+                Button(vm.copy.startButton) { vm.open(row) }.buttonStyle(.gqPrimary)
             } else {
                 Image(systemName: "lock.fill").foregroundStyle(GQColor.textOnCream.opacity(0.3))
             }

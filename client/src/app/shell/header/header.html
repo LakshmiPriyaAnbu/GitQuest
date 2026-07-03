@@ -9,19 +9,19 @@
           <path d="M6 8.6v6.8M8.4 6.4c4 0 5.4 1.4 5.4 4.2" stroke="#100B2C" stroke-width="2.4" stroke-linecap="round" />
         </svg>
       </div>
-      <span class="mobile-title">{{ meta().title }}</span>
+      <span class="mobile-title">{{ shell.meta().title }}</span>
     </div>
   } @else {
     <div class="desktop-title">
-      <div class="title">{{ meta().title }}</div>
-      <div class="subtitle">{{ meta().sub }}</div>
+      <div class="title">{{ shell.meta().title }}</div>
+      <div class="subtitle">{{ shell.meta().sub }}</div>
     </div>
   }
 
   <div class="header-pills">
     <div class="pill pill-head">
       <span class="dot"></span>
-      <span class="pill-text">{{ headLabel() }}</span>
+      <span class="pill-text">{{ shell.headLabel() }}</span>
     </div>
     <div class="pill pill-xp">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="#5B3D06"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z" /></svg>

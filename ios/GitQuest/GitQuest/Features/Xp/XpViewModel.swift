@@ -1,7 +1,6 @@
 import Foundation
 
 private let LIVE_BADGE_IDS: Set<String> = ["streak", "repo", "pr", "bughunter"]
-private let DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 struct BadgeRow: Identifiable {
     let def: BadgeDef
@@ -16,6 +15,13 @@ struct WeeklyBar: Identifiable {
     var id: String { day }
 }
 
+struct XpStatItem: Identifiable {
+    let id: String
+    let label: String
+    let value: String
+    let palette: String
+}
+
 @Observable
 final class XpViewModel {
     private let game: GameStateStore
@@ -28,6 +34,11 @@ final class XpViewModel {
         self.github = github
     }
 
+    var route: AppRouteDescriptor {
+        APP_ROUTES.first(where: { $0.id == "xp" }) ?? APP_ROUTES[0]
+    }
+
+    let copy = GQGeneratedContent.shared.xp
     private var derived: DerivedGithub? { github.derived }
 
     var badges: [BadgeRow] {
@@ -56,7 +67,7 @@ final class XpViewModel {
         }
         let historyLen = gitState.state?.history.count ?? 0
         let active = min(7, historyLen)
-        return DAY_NAMES.enumerated().map { i, day in
+        return copy.dayNames.enumerated().map { i, day in
             WeeklyBar(day: day, pct: i < active ? 24 + ((i * 13) % 64) : 8, count: i < active ? 1 : 0)
         }
     }
@@ -66,4 +77,17 @@ final class XpViewModel {
     var levelInfo: LevelInfo { game.levelInfo }
     var xp: Int { game.xp }
     var questsDone: Int { game.questsDone }
+    var progressLabel: String { "\(GQGeneratedContent.shared.shell.levelPrefix) \(levelInfo.level) · \(xp) \(GQGeneratedContent.shared.shell.xpSuffix)" }
+
+    var stats: [XpStatItem] {
+        let values: [String: String] = [
+            "xp": String(xp),
+            "rank": levelInfo.title,
+            "quests": "\(questsDone)/\(QUESTS.count)",
+            "badges": "\(unlockedBadgeCount)/\(BADGES.count)",
+        ]
+        return copy.stats.map {
+            XpStatItem(id: $0.id, label: $0.label, value: values[$0.id] ?? "0", palette: $0.palette)
+        }
+    }
 }

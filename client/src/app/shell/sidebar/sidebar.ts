@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { GameStateService } from '../../core/game-state.service';
-import { NAV_GROUPS } from '../../core/nav-data';
 import { Icon } from '../../shared/icon/icon';
+import { ShellStateService } from '../shell-state.service';
 
 @Component({
   selector: 'gq-sidebar',
@@ -12,5 +12,5 @@ import { Icon } from '../../shared/icon/icon';
 })
 export class Sidebar {
   protected readonly game = inject(GameStateService);
-  protected readonly groups = NAV_GROUPS;
+  protected readonly shell = inject(ShellStateService);
 }

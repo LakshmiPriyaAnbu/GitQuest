@@ -15,15 +15,37 @@ final class SettingsViewModel {
     private let game: GameStateStore
     private let gitState: GitStateController
     private let github: GithubViewModel
+    private let summaryBuilder: ActivitySummaryBuilder
 
     init(game: GameStateStore, gitState: GitStateController, github: GithubViewModel) {
         self.game = game
         self.gitState = gitState
         self.github = github
+        self.summaryBuilder = ActivitySummaryBuilder(game: game, gitState: gitState)
     }
 
+    var route: AppRouteDescriptor {
+        APP_ROUTES.first(where: { $0.id == "settings" }) ?? APP_ROUTES[0]
+    }
+
+    let copy = GQGeneratedContent.shared.settings
     var settings: GameSettings { game.settings }
     var badgeCount: Int { game.badges.count }
+    var themeOptions: [ThemeOptionCopy] { copy.themes }
+
+    var aboutStats: [(label: String, value: String)] {
+        let values: [String: String] = [
+            "xp": "\(game.xp)",
+            "rank": game.levelInfo.title,
+            "quests": "\(game.questsDone)/\(QUESTS.count)",
+            "badges": "\(badgeCount)/\(BADGES.count)",
+        ]
+        return copy.about.map { (label: $0.label, value: values[$0.id] ?? "0") }
+    }
+
+    func theme(for id: String) -> GQTheme {
+        id == GQTheme.candy.rawValue ? .candy : .nebula
+    }
 
     func setTheme(_ theme: GQTheme) {
         game.updateSettings { $0.theme = theme }
@@ -43,30 +65,7 @@ final class SettingsViewModel {
     }
 
     func exportSummary() -> ActivitySummaryDocument? {
-        struct Summary: Encodable {
-            let app: String
-            let generated: String
-            let xp: Int
-            let level: Int
-            let questsCompleted: [String]
-            let badges: [String]
-            let commits: Int
-            let branches: [String]
-        }
-        let state = gitState.state
-        let summary = Summary(
-            app: "GitQuest",
-            generated: ISO8601DateFormatter().string(from: Date()),
-            xp: game.xp,
-            level: game.levelInfo.level,
-            questsCompleted: Array(game.quests.keys),
-            badges: Array(game.badges.keys),
-            commits: state?.order.count ?? 0,
-            branches: state.map { Array($0.branches.keys) } ?? []
-        )
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        guard let data = try? encoder.encode(summary) else { return nil }
+        guard let data = summaryBuilder.buildData() else { return nil }
         return ActivitySummaryDocument(data: data)
     }
 }

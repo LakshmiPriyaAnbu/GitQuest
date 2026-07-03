@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ConflictModalView: View {
     let conflict: GitConflict
+    let copy: BranchConflictCopy
     let onResolve: (ConflictChoice) -> Void
     let onCancel: () -> Void
 
@@ -9,17 +10,17 @@ struct ConflictModalView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("⚔️ Merge conflict!").font(GQFont.display(20))
+                    Text(copy.title).font(GQFont.display(20))
                     Text(conflict.file).font(GQFont.mono(13)).foregroundStyle(GQColor.textOnCream.opacity(0.7))
                 }
 
-                diffPane(title: "CURRENT", lines: conflict.ours, color: GQColor.mint)
-                diffPane(title: "INCOMING", lines: conflict.theirs, color: GQColor.pink)
+                diffPane(title: copy.currentLabel, lines: conflict.ours, color: GQColor.mint)
+                diffPane(title: copy.incomingLabel, lines: conflict.theirs, color: GQColor.pink)
 
                 VStack(spacing: 10) {
-                    Button("Keep current") { onResolve(.current) }.buttonStyle(.gqPrimary).frame(maxWidth: .infinity)
-                    Button("Keep incoming") { onResolve(.incoming) }.buttonStyle(.gqPink).frame(maxWidth: .infinity)
-                    Button("Combine both") { onResolve(.both) }.buttonStyle(.gqCyan).frame(maxWidth: .infinity)
+                    Button(copy.keepCurrentButton) { onResolve(.current) }.buttonStyle(.gqPrimary).frame(maxWidth: .infinity)
+                    Button(copy.keepIncomingButton) { onResolve(.incoming) }.buttonStyle(.gqPink).frame(maxWidth: .infinity)
+                    Button(copy.combineBothButton) { onResolve(.both) }.buttonStyle(.gqCyan).frame(maxWidth: .infinity)
                     Button("Cancel", role: .cancel) { onCancel() }.buttonStyle(.gqDefault).frame(maxWidth: .infinity)
                 }
             }

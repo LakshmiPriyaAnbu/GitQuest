@@ -2,12 +2,7 @@ import { Component, inject } from '@angular/core';
 import { GameStateService } from '../../core/game-state.service';
 import { Icon } from '../icon/icon';
 import { ToastKind } from '../../core/models';
-
-const KIND_STYLE: Record<ToastKind, { bg: string; icon: string; fg: string }> = {
-  xp: { bg: '#FFC24B', icon: 'xp', fg: '#5B3D06' },
-  badge: { bg: '#FF6B9D', icon: 'trophy', fg: '#FFF4E4' },
-  info: { bg: '#37D6E6', icon: 'flag', fg: '#0B3A40' },
-};
+import { ToastPresenterService } from './toast-presenter.service';
 
 @Component({
   selector: 'gq-toast-container',
@@ -31,8 +26,9 @@ const KIND_STYLE: Record<ToastKind, { bg: string; icon: string; fg: string }> = 
 })
 export class ToastContainer {
   protected readonly game = inject(GameStateService);
+  private readonly presenter = inject(ToastPresenterService);
 
   style(kind: ToastKind) {
-    return KIND_STYLE[kind];
+    return this.presenter.style(kind);
   }
 }

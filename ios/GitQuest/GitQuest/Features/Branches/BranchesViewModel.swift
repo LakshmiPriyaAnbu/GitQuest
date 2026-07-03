@@ -15,6 +15,11 @@ final class BranchesViewModel {
         self.gitState = gitState
     }
 
+    var route: AppRouteDescriptor {
+        APP_ROUTES.first(where: { $0.id == "branches" }) ?? APP_ROUTES[0]
+    }
+
+    let copy = GQGeneratedContent.shared.branches
     var state: GitState? { gitState.state }
     var hasRepo: Bool { state?.initialized == true }
     var conflict: GitConflict? { state?.conflict }
@@ -22,7 +27,7 @@ final class BranchesViewModel {
     var branches: [BranchRow] {
         guard let s = state else { return [] }
         return s.branches.map { name, sha in
-            BranchRow(name: name, tip: sha ?? "(no commits)", isHead: name == s.head.ref)
+            BranchRow(name: name, tip: sha ?? GQGeneratedContent.shared.commitMap.detailLabels.rootCommit, isHead: name == s.head.ref)
         }.sorted { $0.name < $1.name }
     }
 

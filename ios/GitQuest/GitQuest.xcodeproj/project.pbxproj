@@ -10,6 +10,13 @@
 		0860C93BE195581AABF34B83 /* CardStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C773C9F57160FADCD6644B /* CardStyle.swift */; };
 		096898DA94C0743805050F00 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A00003E04089483C2CE93E /* ContentView.swift */; };
 		0A2DFBB87E6A2EDAE08087EA /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5673D08D7A21F48FFEEEE1 /* SettingsView.swift */; };
+		A4010001A4010001A4010001 /* ActivitySummaryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010001A2010001A2010001 /* ActivitySummaryBuilder.swift */; };
+		A4010002A4010002A4010002 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010002A2010002A2010002 /* DashboardViewModel.swift */; };
+		A4010003A4010003A4010003 /* LearnViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010003A2010003A2010003 /* LearnViewModel.swift */; };
+		A4010004A4010004A4010004 /* InternalsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010004A2010004A2010004 /* InternalsViewModel.swift */; };
+		A4010005A4010005A4010005 /* MoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010005A2010005A2010005 /* MoreViewModel.swift */; };
+		A4010006A4010006A4010006 /* AppContent.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010006A2010006A2010006 /* AppContent.generated.swift */; };
+		A4010007A4010007A4010007 /* Theme.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010007A2010007A2010007 /* Theme.generated.swift */; };
 		0E7A4587C8EFEF41E3865141 /* GitQuestAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F11CFF8DEC2C67E56616D0 /* GitQuestAPIError.swift */; };
 		121D4D4E355C5AD97AF2D103 /* GQColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FEB283AC5B5158A06950688 /* GQColor.swift */; };
 		137E2F32C6D1AFEC49D83E8D /* BadgeChipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3A0AE238452DB8C7A6E67A /* BadgeChipView.swift */; };
@@ -95,6 +102,13 @@
 		3B52669D1EE7A55E7537E368 /* CommitMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitMapView.swift; sourceTree = "<group>"; };
 		3F0BDEFEB66F4FD0BDD6D5EE /* GQIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GQIcon.swift; sourceTree = "<group>"; };
 		4B5673D08D7A21F48FFEEEE1 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A2010001A2010001A2010001 /* ActivitySummaryBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitySummaryBuilder.swift; sourceTree = "<group>"; };
+		A2010002A2010002A2010002 /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
+		A2010003A2010003A2010003 /* LearnViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnViewModel.swift; sourceTree = "<group>"; };
+		A2010004A2010004A2010004 /* InternalsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalsViewModel.swift; sourceTree = "<group>"; };
+		A2010005A2010005A2010005 /* MoreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreViewModel.swift; sourceTree = "<group>"; };
+		A2010006A2010006A2010006 /* AppContent.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContent.generated.swift; sourceTree = "<group>"; };
+		A2010007A2010007A2010007 /* Theme.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.generated.swift; sourceTree = "<group>"; };
 		531D266E0EFFF42D5678F6F2 /* DashboardData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardData.swift; sourceTree = "<group>"; };
 		5E9258FDDB9095840433FB33 /* GameStateStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStateStoreTests.swift; sourceTree = "<group>"; };
 		5E94620209E255B2B8151AE1 /* XpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XpView.swift; sourceTree = "<group>"; };
@@ -136,6 +150,7 @@
 		01327ECF9F4017AE0A9836CC /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				A2010001A2010001A2010001 /* ActivitySummaryBuilder.swift */,
 				4B5673D08D7A21F48FFEEEE1 /* SettingsView.swift */,
 				C02B0D679CC61E034F2EBCDB /* SettingsViewModel.swift */,
 			);
@@ -157,6 +172,7 @@
 			children = (
 				27C937E1AD5B5420473957CB /* InternalsData.swift */,
 				DE3E9B0586C5A75AA24219CB /* InternalsView.swift */,
+				A2010004A2010004A2010004 /* InternalsViewModel.swift */,
 			);
 			path = Internals;
 			sourceTree = "<group>";
@@ -184,8 +200,18 @@
 			children = (
 				531D266E0EFFF42D5678F6F2 /* DashboardData.swift */,
 				692F1983F93618A3221F55FE /* DashboardView.swift */,
+				A2010002A2010002A2010002 /* DashboardViewModel.swift */,
 			);
 			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		A3010001A3010001A3010001 /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				A2010006A2010006A2010006 /* AppContent.generated.swift */,
+				A2010007A2010007A2010007 /* Theme.generated.swift */,
+			);
+			path = Generated;
 			sourceTree = "<group>";
 		};
 		42254A1E3F540610B646C569 = {
@@ -221,6 +247,7 @@
 			isa = PBXGroup;
 			children = (
 				BBBBB4353D7A8CB1D23380DE /* MoreView.swift */,
+				A2010005A2010005A2010005 /* MoreViewModel.swift */,
 			);
 			path = More;
 			sourceTree = "<group>";
@@ -329,6 +356,7 @@
 			children = (
 				DC080001A4FFD52306951D65 /* AppRouter.swift */,
 				E1A00003E04089483C2CE93E /* ContentView.swift */,
+				A3010001A3010001A3010001 /* Generated */,
 				9F1B45C76C558F724A5DB53D /* GitQuestApp.swift */,
 				4DF9E52E511967B1FA373984 /* Features */,
 				85BD2F1AEA6A1AA63710FC3C /* Models */,
@@ -344,6 +372,7 @@
 			children = (
 				A100ADE6462BD56B2919D01F /* LearnData.swift */,
 				6DAF2629F6F75E05BA841CA3 /* LearnView.swift */,
+				A2010003A2010003A2010003 /* LearnViewModel.swift */,
 			);
 			path = Learn;
 			sourceTree = "<group>";
@@ -473,6 +502,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4010006A4010006A4010006 /* AppContent.generated.swift in Sources */,
+				A4010001A4010001A4010001 /* ActivitySummaryBuilder.swift in Sources */,
 				BE923F43CB13347200067520 /* AppRouter.swift in Sources */,
 				137E2F32C6D1AFEC49D83E8D /* BadgeChipView.swift in Sources */,
 				717728D9762F9011FEAB4640 /* BranchesView.swift in Sources */,
@@ -490,6 +521,7 @@
 				096898DA94C0743805050F00 /* ContentView.swift in Sources */,
 				823741C5FF4B697685A5AB2E /* DashboardData.swift in Sources */,
 				61D5C81A5E653C3642479D55 /* DashboardView.swift in Sources */,
+				A4010002A4010002A4010002 /* DashboardViewModel.swift in Sources */,
 				121D4D4E355C5AD97AF2D103 /* GQColor.swift in Sources */,
 				FBF3DE1EC89E2586F1FC4969 /* GQFont.swift in Sources */,
 				960E5E55BC89413701E5379B /* GQIcon.swift in Sources */,
@@ -508,15 +540,19 @@
 				2923C9DE702886FDA9CE23F9 /* GithubViewModel.swift in Sources */,
 				66BEAE664DD1CEBF8CBF924E /* InternalsData.swift in Sources */,
 				A21509051B34CA00C49C605D /* InternalsView.swift in Sources */,
+				A4010004A4010004A4010004 /* InternalsViewModel.swift in Sources */,
 				C129AFC4825092C441ABA071 /* LearnData.swift in Sources */,
 				71F3F9B2319BE5C9CA7B236E /* LearnView.swift in Sources */,
+				A4010003A4010003A4010003 /* LearnViewModel.swift in Sources */,
 				8ABEB879BE439864CE2D11F3 /* MoreView.swift in Sources */,
+				A4010005A4010005A4010005 /* MoreViewModel.swift in Sources */,
 				287C0184238D4DAF0F6CF9F4 /* PlaygroundView.swift in Sources */,
 				9BAD18B47D38097BF3D70A04 /* PlaygroundViewModel.swift in Sources */,
 				6250552FE74F110F8BEFC75D /* QuestsView.swift in Sources */,
 				3697FA2942E8ED058116CDCC /* QuestsViewModel.swift in Sources */,
 				0A2DFBB87E6A2EDAE08087EA /* SettingsView.swift in Sources */,
 				95684A0887C33298EE3DCD4C /* SettingsViewModel.swift in Sources */,
+				A4010007A4010007A4010007 /* Theme.generated.swift in Sources */,
 				237A758AD114CD305F4CBCEF /* ToastOverlay.swift in Sources */,
 				F18FACC5CF83BBD087B7721F /* XpView.swift in Sources */,
 				33C83570A5D4D858AE6A93E6 /* XpViewModel.swift in Sources */,

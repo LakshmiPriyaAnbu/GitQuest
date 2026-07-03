@@ -3,20 +3,20 @@
     <div class="hero-card">
       <div class="hero-glow"></div>
       <div class="hero-content">
-        <div class="eyebrow">✦ interactive git playground</div>
-        <h1>Learn Git by <span class="accent">seeing</span> what happens behind the command.</h1>
+        <div class="eyebrow">{{ vm.copy.heroEyebrow }}</div>
+        <h1>{{ vm.copy.heroTitlePrefix }}<span class="accent">{{ vm.copy.heroTitleAccent }}</span>{{ vm.copy.heroTitleSuffix }}</h1>
         <p>
           Type real git commands and watch files hop from your workspace camp to the staging backpack to glowing
           commit crystals. It's a quest, not a lecture.
         </p>
         <div class="hero-actions">
-          <button class="gq-btn gq-btn-primary" (click)="goPlayground()">
+          <button class="gq-btn gq-btn-primary" (click)="vm.openPlayground()">
             <gq-icon name="play" [size]="17" stroke="#0B3A26"></gq-icon>
-            Start Git Quest
+            {{ vm.copy.primaryCta }}
           </button>
-          <button class="gq-btn" (click)="goGithub()">
+          <button class="gq-btn" (click)="vm.openGithub()">
             <gq-icon name="github" [size]="17"></gq-icon>
-            Visualize GitHub
+            {{ vm.copy.secondaryCta }}
           </button>
         </div>
       </div>
@@ -27,27 +27,27 @@
       <span class="twinkle t2">✦</span>
       <span class="twinkle t3">✦</span>
       <gq-mascot></gq-mascot>
-      <div class="mascot-title">Meet Blip!</div>
-      <div class="mascot-body">your commit sprite — he carries HEAD wherever you go</div>
+      <div class="mascot-title">{{ vm.copy.mascotTitle }}</div>
+      <div class="mascot-body">{{ vm.copy.mascotBody }}</div>
     </div>
   </div>
 
   <div class="stat-grid">
-    @for (s of stats(); track s.label) {
-      <div class="stat-tile" [style.background]="s.bg">
-        <div class="stat-label" [style.color]="s.hintColor">{{ s.label }}</div>
-        <div class="stat-value" [style.color]="s.color">{{ s.value }}</div>
-        <div class="stat-hint" [style.color]="s.hintColor">{{ s.hint }}</div>
+    @for (s of vm.stats(); track s.label) {
+      <div class="stat-tile" [class]="s.className">
+        <div class="stat-label">{{ s.label }}</div>
+        <div class="stat-value">{{ s.value }}</div>
+        <div class="stat-hint">{{ s.hint }}</div>
       </div>
     }
   </div>
 
   <div class="gq-section-title">
-    <h2>Pick your adventure</h2>
+    <h2>{{ vm.copy.sectionTitle }}</h2>
     <div class="rule"></div>
   </div>
   <div class="feature-grid">
-    @for (f of features; track f.title) {
+    @for (f of vm.features; track f.title) {
       <a class="feature-card" [routerLink]="f.route">
         <div class="feature-icon" [style.background]="f.iconBg">
           <gq-icon [name]="f.icon" [size]="22"></gq-icon>

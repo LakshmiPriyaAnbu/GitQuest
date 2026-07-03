@@ -1,14 +1,14 @@
 <section class="lab">
   <div class="lab-list">
-    @for (l of lessons; track l.id) {
+    @for (l of vm.lessons; track l.id) {
       <button
         class="lab-chip"
-        [class.lab-chip-active]="l.id === activeId()"
-        [class.lab-chip-done]="quizDone()[l.id]"
-        (click)="select(l.id)"
+        [class.lab-chip-active]="l.id === vm.activeId()"
+        [class.lab-chip-done]="vm.quizDone()[l.id]"
+        (click)="vm.select(l.id)"
       >
         <span class="chip-cmd">{{ l.cmd }}</span>
-        @if (quizDone()[l.id]) {
+        @if (vm.quizDone()[l.id]) {
           <gq-icon name="check" [size]="14" stroke="#0B3A26"></gq-icon>
         }
       </button>
@@ -16,32 +16,32 @@
   </div>
 
   <div class="lab-detail gq-panel">
-    <div class="lab-blurb">{{ active().blurb }}</div>
+    <div class="lab-blurb">{{ vm.active().blurb }}</div>
 
     <div class="lab-syntax-row">
       <div class="lab-box">
-        <div class="lab-box-label">Syntax</div>
-        <div class="lab-box-code">{{ active().syntax }}</div>
+        <div class="lab-box-label">{{ vm.copy.syntaxLabel }}</div>
+        <div class="lab-box-code">{{ vm.active().syntax }}</div>
       </div>
       <div class="lab-box">
-        <div class="lab-box-label">Example</div>
-        <div class="lab-box-code">{{ active().example }}</div>
+        <div class="lab-box-label">{{ vm.copy.exampleLabel }}</div>
+        <div class="lab-box-code">{{ vm.active().example }}</div>
       </div>
     </div>
 
-    @if (hasMove()) {
+    @if (vm.hasMove()) {
       <div class="lab-move">
-        <div class="lab-move-box">{{ active().from }}</div>
+        <div class="lab-move-box">{{ vm.active().from }}</div>
         <span class="lab-move-arrow">→</span>
-        <div class="lab-move-box lab-move-box-to">{{ active().to }}</div>
+        <div class="lab-move-box lab-move-box-to">{{ vm.active().to }}</div>
       </div>
     }
 
-    @if (active().mistakes.length) {
+    @if (vm.active().mistakes.length) {
       <div class="lab-mistakes">
-        <div class="lab-mistakes-title">⚠ common mistakes</div>
+        <div class="lab-mistakes-title">⚠ {{ vm.copy.commonMistakesTitle.toLowerCase() }}</div>
         <ul>
-          @for (m of active().mistakes; track m) {
+          @for (m of vm.active().mistakes; track m) {
             <li>{{ m }}</li>
           }
         </ul>
@@ -49,26 +49,26 @@
     }
 
     <div class="lab-quiz">
-      <div class="lab-quiz-q">{{ active().quiz.q }}</div>
+      <div class="lab-quiz-q">{{ vm.active().quiz.q }}</div>
       <div class="lab-quiz-options">
-        @for (opt of active().quiz.options; track opt.t) {
+        @for (opt of vm.active().quiz.options; track opt.t) {
           <button
             class="lab-quiz-option"
-            [class.quiz-correct]="quizDone()[activeId()] && opt.correct"
-            [class.quiz-wrong]="wrongPick() === opt.t"
-            (click)="answer(opt)"
+            [class.quiz-correct]="vm.quizDone()[vm.activeId()] && opt.correct"
+            [class.quiz-wrong]="vm.wrongPick() === opt.t"
+            (click)="vm.answer(opt)"
           >
             {{ opt.t }}
-            @if (quizDone()[activeId()] && opt.correct) {
+            @if (vm.quizDone()[vm.activeId()] && opt.correct) {
               <gq-icon name="check" [size]="14" stroke="#0B3A26"></gq-icon>
             }
           </button>
         }
       </div>
-      @if (quizDone()[activeId()]) {
-        <div class="lab-quiz-done">Nice! +15 XP</div>
-      } @else if (wrongPick()) {
-        <div class="lab-quiz-retry">Not quite — give it another try!</div>
+      @if (vm.quizDone()[vm.activeId()]) {
+        <div class="lab-quiz-done">{{ vm.copy.successMessage }}</div>
+      } @else if (vm.wrongPick()) {
+        <div class="lab-quiz-retry">{{ vm.copy.retryMessage }}</div>
       }
     </div>
   </div>

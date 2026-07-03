@@ -7,30 +7,35 @@ struct GithubView: View {
         @Bindable var vm = vm
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("GitHub Visualizer").font(GQFont.display(22)).foregroundStyle(GQColor.cream)
-                Text("turn a profile into a quest log").font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
+                Text(vm.route.title).font(GQFont.display(22)).foregroundStyle(GQColor.cream)
+                Text(vm.route.subtitle).font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
 
                 HStack {
-                    TextField("github username", text: $vm.username)
+                    TextField(vm.copy.usernamePlaceholder, text: $vm.username)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .padding(10)
                         .background(GQColor.cream)
                         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                         .onSubmit { Task { await vm.submit() } }
-                    Button("Scan") { Task { await vm.submit() } }.buttonStyle(.gqPrimary)
+                    Button(vm.copy.scanButton) { Task { await vm.submit() } }.buttonStyle(.gqPrimary)
                 }
-                Button("Try demo") { vm.loadDemo() }.buttonStyle(.gqDefault)
+                Button(vm.copy.demoButton) { vm.loadDemo() }.buttonStyle(.gqDefault)
 
                 switch vm.status {
                 case .empty:
-                    EmptyView()
+                    Text(vm.copy.emptyMessage).font(GQFont.body(12)).foregroundStyle(GQColor.muted3)
                 case .loading:
-                    ProgressView().tint(.white).frame(maxWidth: .infinity).padding()
+                    VStack(spacing: 8) {
+                        ProgressView().tint(.white)
+                        Text(vm.copy.loadingMessage).font(GQFont.body(12)).foregroundStyle(GQColor.muted3)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
                 case .error:
                     VStack(spacing: 8) {
                         Text(vm.errorMessage).font(GQFont.body(13)).foregroundStyle(GQColor.pink)
-                        Button("Try demo instead") { vm.loadDemo() }.buttonStyle(.gqPink)
+                        Button(vm.copy.errorDemoButton) { vm.loadDemo() }.buttonStyle(.gqPink)
                     }
                 case .loaded:
                     if let data = vm.data, let derived = vm.derived {
@@ -41,7 +46,7 @@ struct GithubView: View {
             .padding(16)
         }
         .background(GQColor.bg.ignoresSafeArea())
-        .navigationTitle("GitHub")
+        .navigationTitle(vm.route.label)
     }
 
     private func loadedContent(data: GithubBundle, derived: DerivedGithub) -> some View {
@@ -60,6 +65,13 @@ struct GithubView: View {
             Text(data.user.name ?? data.user.login).font(GQFont.display(18))
             Text("@\(data.user.login)").font(GQFont.mono(12)).foregroundStyle(GQColor.textOnCream.opacity(0.7))
             if let bio = data.user.bio { Text(bio).font(GQFont.body(12)) }
+            HStack(spacing: 10) {
+                Text("\(data.user.public_repos) \(vm.copy.repoCountLabel)")
+                Text("\(data.user.followers) \(vm.copy.followersLabel)")
+                Text("\(data.user.following) \(vm.copy.followingLabel)")
+            }
+            .font(GQFont.body(11))
+            .foregroundStyle(GQColor.textOnCream.opacity(0.7))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
@@ -69,21 +81,13 @@ struct GithubView: View {
     }
 
     private func statsGrid(_ data: GithubBundle, _ derived: DerivedGithub) -> some View {
-        let items: [(String, String, Int)] = [
-            ("Contributions", "XP", derived.totalContributions),
-            ("Current streak", "Combo", derived.currentStreak),
-            ("Repositories", "Worlds", data.user.public_repos),
-            ("Languages", "Power types", derived.languages.count),
-            ("Pull requests", "Missions", data.events.filter { $0.type == "PullRequestEvent" }.count),
-            ("Stars", "Reputation", derived.totalStars),
-        ]
         let columns = [GridItem(.adaptive(minimum: 100), spacing: 8)]
         return LazyVGrid(columns: columns, spacing: 8) {
-            ForEach(items, id: \.0) { label, sub, value in
+            ForEach(vm.gameStats) { item in
                 VStack(spacing: 2) {
-                    Text("\(value)").font(GQFont.display(16))
-                    Text(label).font(GQFont.body(10, weight: .bold))
-                    Text(sub).font(GQFont.body(9)).foregroundStyle(GQColor.textOnCream.opacity(0.6))
+                    Text("\(item.value)").font(GQFont.display(16))
+                    Text(item.label).font(GQFont.body(10, weight: .bold))
+                    Text(item.sub).font(GQFont.body(9)).foregroundStyle(GQColor.textOnCream.opacity(0.6))
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
@@ -96,12 +100,12 @@ struct GithubView: View {
 
     private func heatmap(_ derived: DerivedGithub) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Contribution heatmap").font(GQFont.body(12, weight: .bold)).foregroundStyle(GQColor.cream)
+            Text(vm.copy.contributionCalendarTitle).font(GQFont.body(12, weight: .bold)).foregroundStyle(GQColor.cream)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 3) {
-                    ForEach(Array(derived.weeks.enumerated()), id: \.0) { _, week in
+                    ForEach(Array(derived.weeks.enumerated()), id: \.0) { entry in
                         VStack(spacing: 3) {
-                            ForEach(week, id: \.date) { cell in
+                            ForEach(entry.element, id: \.date) { cell in
                                 RoundedRectangle(cornerRadius: 2)
                                     .fill(cell.uiColor)
                                     .frame(width: 10, height: 10)
@@ -115,7 +119,7 @@ struct GithubView: View {
 
     private func languageBars(_ derived: DerivedGithub) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Languages").font(GQFont.body(12, weight: .bold)).foregroundStyle(GQColor.cream)
+            Text(vm.copy.languagesTitle).font(GQFont.body(12, weight: .bold)).foregroundStyle(GQColor.cream)
             ForEach(derived.languages, id: \.name) { lang in
                 VStack(alignment: .leading, spacing: 3) {
                     HStack { Text(lang.name).font(GQFont.body(11)); Spacer(); Text("\(lang.pct)%").font(GQFont.body(11)) }
@@ -135,7 +139,7 @@ struct GithubView: View {
 
     private func topRepos(_ derived: DerivedGithub) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Top repos").font(GQFont.body(12, weight: .bold)).foregroundStyle(GQColor.cream)
+            Text(vm.copy.topReposTitle).font(GQFont.body(12, weight: .bold)).foregroundStyle(GQColor.cream)
             ForEach(derived.topRepos, id: \.name) { repo in
                 HStack {
                     Text(repo.name).font(GQFont.mono(12))
@@ -152,7 +156,7 @@ struct GithubView: View {
 
     private func recentActivity(_ derived: DerivedGithub) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Recent activity").font(GQFont.body(12, weight: .bold)).foregroundStyle(GQColor.cream)
+            Text(vm.copy.recentActivityTitle).font(GQFont.body(12, weight: .bold)).foregroundStyle(GQColor.cream)
             ForEach(derived.recent) { item in
                 HStack {
                     Text(item.icon)

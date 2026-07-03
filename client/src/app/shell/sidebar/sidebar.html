@@ -9,12 +9,12 @@
       </svg>
     </div>
     <div>
-      <div class="brand-name">GitQuest</div>
-      <div class="brand-tag">learn git the fun way</div>
+      <div class="brand-name">{{ shell.shell.brandName }}</div>
+      <div class="brand-tag">{{ shell.shell.brandTag }}</div>
     </div>
   </div>
 
-  @for (grp of groups; track grp.title) {
+    @for (grp of shell.groups; track grp.title) {
     <div class="nav-group">
       <div class="nav-group-title">{{ grp.title }}</div>
       @for (it of grp.items; track it.route) {
@@ -35,8 +35,8 @@
 
   <div class="level-card">
     <div class="level-row">
-      <span class="level-title">Lv {{ game.levelInfo().level }} · {{ game.levelInfo().title }}</span>
-      <span class="level-xp">{{ game.xp() }} XP</span>
+      <span class="level-title">{{ shell.levelLabel() }}</span>
+      <span class="level-xp">{{ shell.xpLabel() }}</span>
     </div>
     <div class="level-bar">
       <div class="level-bar-fill" [style.width.%]="game.levelInfo().pct"></div>

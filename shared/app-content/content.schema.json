@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "shell",
+    "progression",
+    "routes",
+    "navGroups",
+    "mobileNavRouteIds",
+    "moreRouteIds",
+    "dashboard",
+    "playground",
+    "commandLab",
+    "learnCards",
+    "internalsCards",
+    "quests",
+    "badges",
+    "branches",
+    "commitMap",
+    "github",
+    "xp",
+    "settings"
+  ]
+}

@@ -21,7 +21,7 @@ struct PlaygroundView: View {
             .padding(16)
         }
         .background(GQColor.bg.ignoresSafeArea())
-        .navigationTitle("Git Playground")
+        .navigationTitle(vm?.route.label ?? GQGeneratedContent.shared.shell.appTitle)
         .onAppear {
             if vm == nil { vm = PlaygroundViewModel(gitState: gitState) }
         }
@@ -30,11 +30,11 @@ struct PlaygroundView: View {
     private func header(_ vm: PlaygroundViewModel) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Git Playground").font(GQFont.display(22)).foregroundStyle(GQColor.cream)
-                Text("type commands, watch the world change").font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
+                Text(vm.route.title).font(GQFont.display(22)).foregroundStyle(GQColor.cream)
+                Text(vm.route.subtitle).font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
             }
             Spacer()
-            Button("Reset") { Task { await vm.reset() } }
+            Button(vm.copy.resetButton) { Task { await vm.reset() } }
                 .buttonStyle(.gqPink)
         }
     }
@@ -62,7 +62,7 @@ struct PlaygroundView: View {
 
             HStack {
                 Text("$").font(GQFont.mono(13)).foregroundStyle(GQColor.mint)
-                TextField("git ...", text: Binding(get: { vm.command }, set: { vm.command = $0 }))
+                TextField(vm.copy.inputPlaceholder, text: Binding(get: { vm.command }, set: { vm.command = $0 }))
                     .font(GQFont.mono(13))
                     .foregroundStyle(.white)
                     .focused($inputFocused)
@@ -92,26 +92,24 @@ struct PlaygroundView: View {
     }
 
     private func explainCard(_ vm: PlaygroundViewModel) -> some View {
-        Group {
-            if let explain = vm.state?.explain {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(explain.title).font(GQFont.display(14))
-                    Text(explain.body).font(GQFont.body(12)).foregroundStyle(GQColor.textOnCream.opacity(0.8))
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(12)
-                .background(GQColor.cream)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(GQColor.ink, lineWidth: 2))
-            }
+        let title = vm.state?.explain.title ?? vm.copy.defaultExplainTitle
+        let body = vm.state?.explain.body ?? vm.copy.defaultExplainBody
+        return VStack(alignment: .leading, spacing: 3) {
+            Text(title).font(GQFont.display(14))
+            Text(body).font(GQFont.body(12)).foregroundStyle(GQColor.textOnCream.opacity(0.8))
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(GQColor.cream)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(GQColor.ink, lineWidth: 2))
     }
 
     private func columns(_ vm: PlaygroundViewModel) -> some View {
         HStack(spacing: 10) {
-            column(title: "Working Dir", subtitle: vm.workingCountLabel, color: GQColor.orange)
-            column(title: "Staging", subtitle: vm.stagingCountLabel, color: GQColor.gold)
-            column(title: "Local Repo", subtitle: vm.commitCountLabel, color: GQColor.mint)
+            ForEach(vm.columns) { item in
+                column(title: item.title, subtitle: item.subtitle, color: colorForToken(item.color))
+            }
         }
     }
 
@@ -173,8 +171,8 @@ struct PlaygroundView: View {
 
     private func suggestionChips(_ vm: PlaygroundViewModel) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Try one:").font(GQFont.body(12, weight: .bold)).foregroundStyle(GQColor.muted3)
-            ForEach(PLAYGROUND_SUGGESTIONS) { suggestion in
+            Text(vm.copy.suggestionHeading).font(GQFont.body(12, weight: .bold)).foregroundStyle(GQColor.muted3)
+            ForEach(vm.suggestions) { suggestion in
                 Button {
                     vm.command = suggestion.cmd
                     inputFocused = true
@@ -187,6 +185,14 @@ struct PlaygroundView: View {
                 }
                 .buttonStyle(.gqDefault)
             }
+        }
+    }
+
+    private func colorForToken(_ token: String) -> Color {
+        switch token {
+        case "gold": return GQColor.gold
+        case "mint": return GQColor.mint
+        default: return GQColor.orange
         }
     }
 }

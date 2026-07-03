@@ -2,35 +2,35 @@
   <div class="gh-search gq-panel">
     <input
       class="gh-input"
-      placeholder="GitHub username…"
-      [ngModel]="username()"
-      (ngModelChange)="username.set($event)"
-      (keydown.enter)="submit()"
+      [placeholder]="vm.copy.usernamePlaceholder"
+      [ngModel]="vm.username()"
+      (ngModelChange)="vm.username.set($event)"
+      (keydown.enter)="vm.submit()"
     />
-    <button class="gq-btn gq-btn-primary" (click)="submit()">
+    <button class="gq-btn gq-btn-primary" (click)="vm.submit()">
       <gq-icon name="github" [size]="16"></gq-icon>
-      Scan profile
+      {{ vm.copy.scanButton }}
     </button>
-    <button class="gq-btn" (click)="demo()">Try demo (dev-priya)</button>
+    <button class="gq-btn" (click)="vm.demo()">{{ vm.copy.demoButton }}</button>
   </div>
 
-  @switch (github.status()) {
+  @switch (vm.githubState.status()) {
     @case ('loading') {
-      <div class="gh-status">Scanning contribution realm…</div>
+      <div class="gh-status">{{ vm.copy.loadingMessage }}</div>
     }
     @case ('error') {
       <div class="gh-status gh-error">
-        {{ github.errorMessage() }}
-        <button class="gq-btn gq-btn-sm" (click)="demo()">Load demo profile instead</button>
+        {{ vm.githubState.errorMessage() }}
+        <button class="gq-btn gq-btn-sm" (click)="vm.demo()">{{ vm.copy.errorDemoButton }}</button>
       </div>
     }
     @case ('loaded') {
-      @if (github.data(); as data) {
-        @if (derived(); as d) {
+      @if (vm.githubState.data(); as data) {
+        @if (vm.derived(); as d) {
           <div class="gh-grid">
             <div class="gh-profile gq-panel">
               @if (data.demo) {
-                <div class="demo-flag">demo data</div>
+                <div class="demo-flag">{{ vm.copy.demoFlag }}</div>
               }
               <div class="gh-avatar">{{ data.user.login.charAt(0).toUpperCase() }}</div>
               <div class="gh-name">{{ data.user.name || data.user.login }}</div>
@@ -39,12 +39,12 @@
                 <div class="gh-bio">{{ data.user.bio }}</div>
               }
               <div class="gh-counts">
-                <div><strong>{{ data.user.public_repos }}</strong> repos</div>
-                <div><strong>{{ data.user.followers }}</strong> followers</div>
-                <div><strong>{{ data.user.following }}</strong> following</div>
+                <div><strong>{{ data.user.public_repos }}</strong> {{ vm.copy.repoCountLabel }}</div>
+                <div><strong>{{ data.user.followers }}</strong> {{ vm.copy.followersLabel }}</div>
+                <div><strong>{{ data.user.following }}</strong> {{ vm.copy.followingLabel }}</div>
               </div>
 
-              <div class="gh-lang-title">Languages</div>
+              <div class="gh-lang-title">{{ vm.copy.languagesTitle }}</div>
               @for (l of d.languages; track l.name) {
                 <div class="lang-row">
                   <span class="lang-name">{{ l.name }}</span>
@@ -56,7 +56,7 @@
 
             <div class="gh-main">
               <div class="gh-stats">
-                @for (s of gameStats(); track s.label) {
+                @for (s of vm.gameStats(); track s.label) {
                   <div class="gh-stat-tile">
                     <div class="gh-stat-value">{{ s.value }}</div>
                     <div class="gh-stat-label">{{ s.sub }}</div>
@@ -67,8 +67,8 @@
 
               <div class="gq-panel heatmap-panel">
                 <div class="heatmap-head">
-                  <span>Contribution calendar</span>
-                  <span class="streak-tag">🔥 longest streak: {{ d.longestStreak }} days</span>
+                  <span>{{ vm.copy.contributionCalendarTitle }}</span>
+                  <span class="streak-tag">{{ vm.copy.longestStreakPrefix }}{{ d.longestStreak }}{{ vm.copy.longestStreakSuffix }}</span>
                 </div>
                 <div class="heatmap-grid">
                   @for (week of d.weeks; track $index) {
@@ -83,7 +83,7 @@
 
               <div class="gh-two-col">
                 <div class="gq-panel">
-                  <div class="gh-sub-title">Top worlds (repos)</div>
+                  <div class="gh-sub-title">{{ vm.copy.topReposTitle }}</div>
                   @for (r of d.topRepos; track r.name) {
                     <div class="repo-row">
                       <span class="repo-name">{{ r.name }}</span>
@@ -92,7 +92,7 @@
                   }
                 </div>
                 <div class="gq-panel">
-                  <div class="gh-sub-title">Recent quests</div>
+                  <div class="gh-sub-title">{{ vm.copy.recentActivityTitle }}</div>
                   @for (a of d.recent; track $index) {
                     <div class="activity-row">
                       <span class="activity-icon">{{ a.icon }}</span>
@@ -108,7 +108,7 @@
       }
     }
     @default {
-      <div class="gh-status">Enter a GitHub username above, or try the demo profile.</div>
+      <div class="gh-status">{{ vm.copy.emptyMessage }}</div>
     }
   }
 </section>

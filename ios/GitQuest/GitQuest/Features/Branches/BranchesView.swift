@@ -10,7 +10,7 @@ struct BranchesView: View {
                 content(vm)
                     .sheet(isPresented: Binding(get: { vm.conflict != nil }, set: { if !$0 { Task { await vm.cancelConflict() } } })) {
                         if let conflict = vm.conflict {
-                            ConflictModalView(conflict: conflict) { choice in
+                            ConflictModalView(conflict: conflict, copy: vm.copy.conflict) { choice in
                                 Task { await vm.resolve(choice) }
                             } onCancel: {
                                 Task { await vm.cancelConflict() }
@@ -24,20 +24,20 @@ struct BranchesView: View {
             }
         }
         .background(GQColor.bg.ignoresSafeArea())
-        .navigationTitle("Branch & Merge")
+        .navigationTitle(vm?.route.label ?? GQGeneratedContent.shared.shell.appTitle)
         .onAppear { if vm == nil { vm = BranchesViewModel(gitState: gitState) } }
     }
 
     private func content(_ vm: BranchesViewModel) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Branch & Merge").font(GQFont.display(22)).foregroundStyle(GQColor.cream)
-                Text("fork paths and bring them back together").font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
+                Text(vm.route.title).font(GQFont.display(22)).foregroundStyle(GQColor.cream)
+                Text(vm.route.subtitle).font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
 
                 actionsRow(vm)
-                explainerCards()
+                explainerCards(vm)
 
-                Text("Branches").font(GQFont.body(13, weight: .bold)).foregroundStyle(GQColor.cream)
+                Text(vm.copy.branchListTitle).font(GQFont.body(13, weight: .bold)).foregroundStyle(GQColor.cream)
                 ForEach(vm.branches) { branch in
                     branchRow(vm, branch)
                 }
@@ -48,13 +48,13 @@ struct BranchesView: View {
 
     private func actionsRow(_ vm: BranchesViewModel) -> some View {
         VStack(spacing: 10) {
-            Button("Create + switch branch") { Task { await vm.newBranch() } }
+            Button(vm.copy.createBranchButton) { Task { await vm.newBranch() } }
                 .buttonStyle(.gqPrimary).frame(maxWidth: .infinity)
-            Button("Commit here") { Task { await vm.commitHere() } }
+            Button(vm.copy.commitButton) { Task { await vm.commitHere() } }
                 .buttonStyle(.gqCyan).frame(maxWidth: .infinity)
-            Button("Merge into main") { Task { await vm.mergeMain() } }
+            Button(vm.copy.mergeButton) { Task { await vm.mergeMain() } }
                 .buttonStyle(.gqPurple).frame(maxWidth: .infinity)
-            Button("Conflict battle ⚔️") { Task { await vm.startConflict() } }
+            Button(vm.copy.conflictButton) { Task { await vm.startConflict() } }
                 .buttonStyle(.gqPink).frame(maxWidth: .infinity)
         }
     }
@@ -68,9 +68,9 @@ struct BranchesView: View {
             }
             Spacer()
             if branch.isHead {
-                Text("HEAD").font(GQFont.body(10, weight: .bold)).padding(4).background(GQColor.mint).clipShape(Capsule())
+                Text(vm.copy.headLabel).font(GQFont.body(10, weight: .bold)).padding(4).background(GQColor.mint).clipShape(Capsule())
             } else {
-                Button("Switch") { Task { await vm.switchTo(branch.name) } }.buttonStyle(.gqDefault)
+                Button(vm.copy.switchButton) { Task { await vm.switchTo(branch.name) } }.buttonStyle(.gqDefault)
             }
         }
         .padding(12)
@@ -79,11 +79,11 @@ struct BranchesView: View {
         .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(GQColor.ink, lineWidth: 2))
     }
 
-    private func explainerCards() -> some View {
+    private func explainerCards(_ vm: BranchesViewModel) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            explainerCard(title: "Fast-forward merge", body: "When main hasn't moved since you branched, merging just slides main's pointer forward — no new commit needed.")
-            explainerCard(title: "Three-way merge", body: "When both branches have new commits, Git weaves them together into a new merge commit with two parents.")
-            explainerCard(title: "Conflict", body: "If both branches changed the same lines, Git can't guess which one wins — you resolve it by hand.")
+            ForEach(vm.copy.explainers, id: \.title) { explainer in
+                explainerCard(title: explainer.title, body: explainer.body)
+            }
         }
     }
 

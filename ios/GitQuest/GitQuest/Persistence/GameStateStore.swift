@@ -47,6 +47,7 @@ final class GameStateStore {
     var questsDone: Int { quests.count }
 
     init() {
+        GQThemeRuntime.update(theme: settings.theme)
         hydrate()
     }
 
@@ -88,6 +89,7 @@ final class GameStateStore {
 
     func updateSettings(_ mutate: (inout GameSettings) -> Void) {
         mutate(&settings)
+        GQThemeRuntime.update(theme: settings.theme)
         persist()
     }
 
@@ -129,5 +131,6 @@ final class GameStateStore {
         badges = parsed.badges
         quests = parsed.quests
         settings = parsed.settings
+        GQThemeRuntime.update(theme: settings.theme)
     }
 }

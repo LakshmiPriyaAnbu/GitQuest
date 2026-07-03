@@ -37,6 +37,18 @@
   border: 2px solid var(--gq-ink);
 }
 
+.quest-diff-easy {
+  background: #43e197;
+}
+
+.quest-diff-medium {
+  background: #ffc24b;
+}
+
+.quest-diff-hard {
+  background: #ff6b9d;
+}
+
 .quest-status {
   font-family: var(--font-body);
   font-weight: 700;

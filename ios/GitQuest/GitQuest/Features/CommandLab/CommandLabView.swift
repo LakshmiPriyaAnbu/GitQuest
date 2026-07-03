@@ -15,19 +15,19 @@ struct CommandLabView: View {
             }
         }
         .background(GQColor.bg.ignoresSafeArea())
-        .navigationTitle("Command Lab")
+        .navigationTitle(vm?.route.label ?? GQGeneratedContent.shared.shell.appTitle)
         .onAppear { if vm == nil { vm = CommandLabViewModel(game: game) } }
     }
 
     private func content(_ vm: CommandLabViewModel) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Command Lab").font(GQFont.display(22)).foregroundStyle(GQColor.cream)
-                Text("learn one spell at a time").font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
+                Text(vm.route.title).font(GQFont.display(22)).foregroundStyle(GQColor.cream)
+                Text(vm.route.subtitle).font(GQFont.hand(13)).foregroundStyle(GQColor.muted3)
 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
-                        ForEach(LESSONS) { lesson in
+                        ForEach(vm.lessons) { lesson in
                             Button {
                                 vm.select(lesson.id)
                             } label: {
@@ -59,12 +59,12 @@ struct CommandLabView: View {
         return VStack(alignment: .leading, spacing: 12) {
             Text(lesson.blurb).font(GQFont.body(14)).foregroundStyle(GQColor.textOnCream)
 
-            labeledMono("Syntax", lesson.syntax)
-            labeledMono("Example", lesson.example)
+            labeledMono(vm.copy.syntaxLabel, lesson.syntax)
+            labeledMono(vm.copy.exampleLabel, lesson.example)
 
             if !lesson.mistakes.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Common mistakes").font(GQFont.body(12, weight: .bold))
+                    Text(vm.copy.commonMistakesTitle).font(GQFont.body(12, weight: .bold))
                     ForEach(lesson.mistakes, id: \.self) { mistake in
                         Text("• \(mistake)").font(GQFont.body(12)).foregroundStyle(GQColor.textOnCream.opacity(0.8))
                     }
@@ -92,6 +92,12 @@ struct CommandLabView: View {
                     .buttonStyle(.gqDefault)
                     .disabled(vm.quizDone[lesson.id] == true)
                 }
+            }
+
+            if let feedback = vm.feedbackMessage {
+                Text(feedback)
+                    .font(GQFont.body(12, weight: .bold))
+                    .foregroundStyle(vm.quizDone[lesson.id] == true ? GQColor.mint : GQColor.pink)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

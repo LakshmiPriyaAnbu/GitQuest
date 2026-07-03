@@ -17,9 +17,41 @@
   box-shadow: var(--gq-shadow-md);
 }
 
+.stat-palette-mint {
+  background: #dff7ea;
+}
+
+.stat-palette-cyan {
+  background: #eaf6ff;
+}
+
+.stat-palette-gold {
+  background: #fff3d6;
+}
+
+.stat-palette-lavender {
+  background: #ede7ff;
+}
+
 .stat-label {
   font-family: var(--font-hand);
   font-size: 14px;
+}
+
+.stat-palette-mint .stat-label {
+  color: #3d8a63;
+}
+
+.stat-palette-cyan .stat-label {
+  color: #5a89a0;
+}
+
+.stat-palette-gold .stat-label {
+  color: #a3862f;
+}
+
+.stat-palette-lavender .stat-label {
+  color: #6b57a8;
 }
 
 .stat-value {
@@ -27,6 +59,22 @@
   font-weight: 800;
   font-size: 27px;
   margin-top: 2px;
+}
+
+.stat-palette-mint .stat-value {
+  color: #0b3a26;
+}
+
+.stat-palette-cyan .stat-value {
+  color: #112233;
+}
+
+.stat-palette-gold .stat-value {
+  color: #5b3d06;
+}
+
+.stat-palette-lavender .stat-value {
+  color: #4b2ca0;
 }
 
 .badge-grid {
